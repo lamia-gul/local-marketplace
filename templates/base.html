@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Local Marketplace | Premium Neighborhood Essentials{% endblock %}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* Natural Palette CSS Variables */
+        :root {
+            --primary-forest: #2D4739;
+            --local-green: #8CC63F;
+            --bg-alabaster: #F9F8F5;
+            --border-stone: #E2E2D5;
+            --accent-terracotta: #B35D44;
+            --text-main: #1A1A1A;
+            --glass-white: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Dark Mode Variables */
+        [data-theme='dark'] {
+            --primary-forest: #E2E2D5;
+            --local-green: #8CC63F;
+            --bg-alabaster: #121412;
+            --border-stone: #2D4739;
+            --text-main: #F9F8F5;
+            --glass-white: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            overflow-x: hidden;
+            background: var(--bg-alabaster);
+            color: var(--text-main);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* Glassmorphism Slide-over Menu - Enhanced */
+        .slide-over-menu {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: var(--glass-white);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border-left: 1px solid var(--border-stone);
+            z-index: 1000;
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: -10px 0 50px rgba(0, 0, 0, 0.1);
+        }
+
+        .slide-over-menu.open {
+            right: 0;
+        }
+
+        .menu-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .menu-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* Glass Overlay for Slider */
+        .glass-overlay {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            padding: 3rem;
+            max-width: 500px;
+        }
+
+        /* Search Dropdown */
+        .search-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            right: 0;
+            background: var(--glass-white);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-stone);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+
+        .search-dropdown.show {
+            display: block;
+        }
+
+        .search-result-item {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border-stone);
+            cursor: pointer;
+            transition: background 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-result-item:hover {
+            background: rgba(140, 198, 63, 0.1);
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: var(--border-stone);
+        }
+
+        .search-result-info {
+            flex: 1;
+        }
+
+        .search-result-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 0.25rem;
+        }
+
+        .search-result-category {
+            font-size: 0.75rem;
+            color: var(--text-main);
+            opacity: 0.6;
+        }
+
+        .search-no-results {
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-main);
+            opacity: 0.6;
+        }
+
+        .search-no-results i {
+            font-size: 2rem;
+            color: var(--border-stone);
+            margin-bottom: 0.5rem;
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- Ultra-Minimalist Navbar -->
+    <header class="sticky top-0 z-50" style="background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid #f3f4f6; padding: 1.25rem 0;">
+        <div class="container mx-auto px-8 flex justify-between items-center gap-6">
+            <!-- Left: Logo -->
+            <a href="/" class="transition-opacity hover:opacity-80 flex-shrink-0">
+                <img src="{{ url_for('static', filename='images/loci-logo.png') }}" alt="Local Marketplace" class="h-10 object-contain">
+            </a>
+
+            <!-- Center: Search Bar -->
+            <div class="flex-1 max-w-2xl">
+                <div style="position: relative;">
+                    <input
+                        type="text"
+                        id="globalSearch"
+                        placeholder="Search products..."
+                        style="width: 100%; padding: 12px 48px 12px 20px; border: 1px solid #E5E7EB; border-radius: 50px; font-size: 0.875rem; outline: none; transition: all 0.3s ease;"
+                        onfocus="this.style.borderColor='#8CC63F'; this.style.boxShadow='0 0 0 3px rgba(140, 198, 63, 0.1)'"
+                        onblur="setTimeout(() => { this.style.borderColor='#E5E7EB'; this.style.boxShadow='none'; }, 200)"
+                        autocomplete="off"
+                    >
+                    <i class="fa-solid fa-search" style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); color: #9CA3AF; pointer-events: none;"></i>
+
+                    <!-- Search Dropdown -->
+                    <div id="searchDropdown" class="search-dropdown"></div>
+                </div>
+            </div>
+
+            <!-- Right: Become a Seller Button + Hamburger Menu -->
+            <div class="flex items-center gap-4 flex-shrink-0">
+                <a href="/create-store" style="background: #8CC63F; color: white; padding: 10px 24px; border-radius: 50px; font-weight: 500; font-size: 0.875rem; text-decoration: none; transition: all 0.3s ease; white-space: nowrap;"
+                   onmouseover="this.style.background='#7AB52F'"
+                   onmouseout="this.style.background='#8CC63F'">
+                    Become a Seller
+                </a>
+                <button onclick="toggleSlideMenu()" class="text-2xl text-gray-400 hover:text-[#8CC63F] transition-colors">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="min-h-screen">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Glassmorphism Slide-over Menu -->
+    <div id="menuOverlay" class="menu-overlay" onclick="toggleSlideMenu()"></div>
+    <aside id="slideMenu" class="slide-over-menu">
+        <div class="p-10">
+            <!-- Close Button -->
+            <div class="flex justify-end mb-12">
+                <button onclick="toggleSlideMenu()" class="text-3xl transition-colors" style="color: var(--text-main); opacity: 0.5;"
+                        onmouseover="this.style.opacity='1'; this.style.color='var(--local-green)'"
+                        onmouseout="this.style.opacity='0.5'; this.style.color='var(--text-main)'">&times;</button>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="flex flex-col gap-2">
+                <a href="/home" class="p-4 rounded-2xl transition-all text-center" style="font-weight: 500; font-size: 0.813rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-main); background: transparent;"
+                   onmouseover="this.style.background='rgba(140, 198, 63, 0.1)'"
+                   onmouseout="this.style.background='transparent'">
+                    HOME
+                </a>
+                <a href="/products" class="p-4 rounded-2xl transition-all text-center" style="font-weight: 500; font-size: 0.813rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-main); background: transparent;"
+                   onmouseover="this.style.background='rgba(140, 198, 63, 0.1)'"
+                   onmouseout="this.style.background='transparent'">
+                    PRODUCTS
+                </a>
+                <a href="{{ url_for('about') }}" class="p-4 rounded-2xl transition-all text-center" style="font-weight: 500; font-size: 0.813rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-main); background: transparent;"
+                   onmouseover="this.style.background='rgba(140, 198, 63, 0.1)'"
+                   onmouseout="this.style.background='transparent'">
+                    ABOUT
+                </a>
+                <a href="{{ url_for('blog') }}" class="p-4 rounded-2xl transition-all text-center" style="font-weight: 500; font-size: 0.813rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-main); background: transparent;"
+                   onmouseover="this.style.background='rgba(140, 198, 63, 0.1)'"
+                   onmouseout="this.style.background='transparent'">
+                    BLOG
+                </a>
+                <a href="{{ url_for('contact') }}" class="p-4 rounded-2xl transition-all text-center" style="font-weight: 500; font-size: 0.813rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-main); background: transparent;"
+                   onmouseover="this.style.background='rgba(140, 198, 63, 0.1)'"
+                   onmouseout="this.style.background='transparent'">
+                    CONTACT
+                </a>
+                {% if not session.get('is_logged_in') %}
+                <a href="/login" class="p-4 rounded-2xl transition-all text-center" style="font-weight: 500; font-size: 0.813rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-main); background: transparent;"
+                   onmouseover="this.style.background='rgba(140, 198, 63, 0.1)'"
+                   onmouseout="this.style.background='transparent'">
+                    LOGIN
+                </a>
+                <a href="/signup" class="p-4 rounded-2xl transition-all text-center" style="font-weight: 500; font-size: 0.813rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-main); background: transparent;"
+                   onmouseover="this.style.background='rgba(140, 198, 63, 0.1)'"
+                   onmouseout="this.style.background='transparent'">
+                    SIGNUP
+                </a>
+                {% else %}
+                <a href="/dashboard" class="p-4 rounded-2xl transition-all text-center" style="font-weight: 500; font-size: 0.813rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-main); background: transparent;"
+                   onmouseover="this.style.background='rgba(140, 198, 63, 0.1)'"
+                   onmouseout="this.style.background='transparent'">
+                    DASHBOARD
+                </a>
+                {% endif %}
+            </nav>
+
+            <!-- Accent Dot -->
+            <div class="mt-16 flex justify-center">
+                <div style="width: 8px; height: 8px; background: var(--local-green); border-radius: 50%;"></div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop"
+            style="position: fixed; bottom: 30px; right: 30px; background: var(--local-green); color: white; width: 50px; height: 50px; border-radius: 50%; border: none; cursor: pointer; display: none; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 4px 15px rgba(140, 198, 63, 0.4); z-index: 999; transition: all 0.3s ease;"
+            onclick="scrollToTop()"
+            onmouseover="this.style.background='#7AB52F'; this.style.transform='translateY(-3px)'"
+            onmouseout="this.style.background='var(--local-green)'; this.style.transform='translateY(0)'">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <!-- Custom Dark Navy Footer -->
+    <footer style="background: var(--primary-forest); margin-top: 120px; transition: background 0.3s ease;">
+        <div class="container mx-auto px-8 py-16">
+            <!-- Newsletter Section -->
+            <div style="max-width: 600px; margin: 0 auto 4rem; text-align: center;">
+                <h3 style="font-size: 1.5rem; font-weight: 600; color: var(--bg-alabaster); margin-bottom: 1rem;">
+                    Stay Updated
+                </h3>
+                <p style="font-size: 0.938rem; color: rgba(249, 248, 245, 0.7); margin-bottom: 1.5rem;">
+                    Get the latest deals and updates delivered to your inbox
+                </p>
+                <form method="POST" action="/newsletter" style="display: flex; gap: 0.75rem; max-width: 500px; margin: 0 auto;">
+                    <input type="email" name="email" placeholder="Enter your email" required
+                           style="flex: 1; padding: 0.875rem 1.25rem; border-radius: 50px; border: 1px solid var(--border-stone); background: rgba(255, 255, 255, 0.1); color: var(--bg-alabaster); font-size: 0.938rem; outline: none;">
+                    <button type="submit"
+                            style="background: var(--local-green); color: white; padding: 0.875rem 2rem; border-radius: 50px; border: none; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.3s ease;">
+                        Subscribe
+                    </button>
+                </form>
+            </div>
+
+            <!-- Four Column Grid - Responsive -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-12">
+                <!-- Column 1: About -->
+                <div>
+                    <h4 style="color: var(--bg-alabaster); font-weight: 700; margin-bottom: 1.5rem; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em;">About</h4>
+                    <ul class="space-y-3">
+                        <li><a href="{{ url_for('about') }}" style="color: rgba(249, 248, 245, 0.7); transition: color 0.3s ease; font-size: 0.875rem; text-decoration: none;" onmouseover="this.style.color='var(--local-green)'" onmouseout="this.style.color='rgba(249, 248, 245, 0.7)'">About Us</a></li>
+                        <li><a href="{{ url_for('create_store') }}" style="color: rgba(249, 248, 245, 0.7); transition: color 0.3s ease; font-size: 0.875rem; text-decoration: none;" onmouseover="this.style.color='var(--local-green)'" onmouseout="this.style.color='rgba(249, 248, 245, 0.7)'">Become a Seller</a></li>
+                        <li><a href="{{ url_for('careers') }}" style="color: rgba(249, 248, 245, 0.7); transition: color 0.3s ease; font-size: 0.875rem; text-decoration: none;" onmouseover="this.style.color='var(--local-green)'" onmouseout="this.style.color='rgba(249, 248, 245, 0.7)'">Careers</a></li>
+                        <li><a href="{{ url_for('blog') }}" style="color: rgba(249, 248, 245, 0.7); transition: color 0.3s ease; font-size: 0.875rem; text-decoration: none;" onmouseover="this.style.color='var(--local-green)'" onmouseout="this.style.color='rgba(249, 248, 245, 0.7)'">Blog</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 2: Categories (Location-Aware) -->
+                <div>
+                    <h4 style="color: var(--bg-alabaster); font-weight: 700; margin-bottom: 1.5rem; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em;">Categories</h4>
+                    <ul class="space-y-3">
+                        <li><a href="{{ url_for('product_display') }}?category=groceries" style="color: rgba(249, 248, 245, 0.7); transition: color 0.3s ease; font-size: 0.875rem; text-decoration: none;" onmouseover="this.style.color='var(--local-green)'" onmouseout="this.style.color='rgba(249, 248, 245, 0.7)'">Groceries</a></li>
+                        <li><a href="{{ url_for('product_display') }}?category=fashion" style="color: rgba(249, 248, 245, 0.7); transition: color 0.3s ease; font-size: 0.875rem; text-decoration: none;" onmouseover="this.style.color='var(--local-green)'" onmouseout="this.style.color='rgba(249, 248, 245, 0.7)'">Fashion</a></li>
+                        <li><a href="{{ url_for('product_display') }}?category=electronics" style="color: rgba(249, 248, 245, 0.7); transition: color 0.3s ease; font-size: 0.875rem; text-decoration: none;" onmouseover="this.style.color='var(--local-green)'" onmouseout="this.style.color='rgba(249, 248, 245, 0.7)'">Electronics</a></li>
+                        <li><a href="{{ url_for('product_display') }}?category=home" style="color: rgba(249, 248, 245, 0.7); transition: color 0.3s ease; font-size: 0.875rem; text-decoration: none;" onmouseover="this.style.color='var(--local-green)'" onmouseout="this.style.color='rgba(249, 248, 245, 0.7)'">Home & Living</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 3: Support -->
+                <div>
+                    <h4 style="color: var(--bg-alabaster); font-weight: 700; margin-bottom: 1.5rem; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em;">Support</h4>
+                    <ul class="space-y-3">
+                        <li><a href="{{ url_for('help_center') }}" style="color: rgba(249, 248, 245, 0.7); transition: color 0.3s ease; font-size: 0.875rem; text-decoration: none;" onmouseover="this.style.color='var(--local-green)'" onmouseout="this.style.color='rgba(249, 248, 245, 0.7)'">Help Center</a></li>
+                        <li><a href="{{ url_for('contact') }}" style="color: rgba(249, 248, 245, 0.7); transition: color 0.3s ease; font-size: 0.875rem; text-decoration: none;" onmouseover="this.style.color='var(--local-green)'" onmouseout="this.style.color='rgba(249, 248, 245, 0.7)'">Contact Us</a></li>
+                        <li><a href="{{ url_for('shipping') }}" style="color: rgba(249, 248, 245, 0.7); transition: color 0.3s ease; font-size: 0.875rem; text-decoration: none;" onmouseover="this.style.color='var(--local-green)'" onmouseout="this.style.color='rgba(249, 248, 245, 0.7)'">Shipping Info</a></li>
+                        <li><a href="{{ url_for('returns') }}" style="color: rgba(249, 248, 245, 0.7); transition: color 0.3s ease; font-size: 0.875rem; text-decoration: none;" onmouseover="this.style.color='var(--local-green)'" onmouseout="this.style.color='rgba(249, 248, 245, 0.7)'">Returns</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 4: Connect -->
+                <div>
+                    <h4 style="color: var(--bg-alabaster); font-weight: 700; margin-bottom: 1.5rem; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em;">Connect</h4>
+                    <div class="flex gap-4 mb-6">
+                        <a href="https://facebook.com/localmarketplace" target="_blank" rel="noopener noreferrer" style="color: rgba(249, 248, 245, 0.7); transition: color 0.3s ease; font-size: 1.25rem; text-decoration: none;" onmouseover="this.style.color='var(--local-green)'" onmouseout="this.style.color='rgba(249, 248, 245, 0.7)'">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="https://instagram.com/localmarketplace" target="_blank" rel="noopener noreferrer" style="color: rgba(249, 248, 245, 0.7); transition: color 0.3s ease; font-size: 1.25rem; text-decoration: none;" onmouseover="this.style.color='var(--local-green)'" onmouseout="this.style.color='rgba(249, 248, 245, 0.7)'">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://twitter.com/localmarket" target="_blank" rel="noopener noreferrer" style="color: rgba(249, 248, 245, 0.7); transition: color 0.3s ease; font-size: 1.25rem; text-decoration: none;" onmouseover="this.style.color='var(--local-green)'" onmouseout="this.style.color='rgba(249, 248, 245, 0.7)'">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="https://linkedin.com/company/localmarketplace" target="_blank" rel="noopener noreferrer" style="color: rgba(249, 248, 245, 0.7); transition: color 0.3s ease; font-size: 1.25rem; text-decoration: none;" onmouseover="this.style.color='var(--local-green)'" onmouseout="this.style.color='rgba(249, 248, 245, 0.7)'">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                    </div>
+                    <p style="color: rgba(249, 248, 245, 0.6); font-size: 0.875rem;">
+                        <a href="mailto:support@localmarketplace.com" style="transition: color 0.3s ease; text-decoration: none;" onmouseover="this.style.color='var(--local-green)'" onmouseout="this.style.color='rgba(249, 248, 245, 0.6)'">
+                            support@localmarketplace.com
+                        </a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <div style="border-top: 1px solid var(--border-stone); padding-top: 2rem;">
+                <!-- Copyright -->
+                <div class="text-center">
+                    <p style="color: rgba(249, 248, 245, 0.5); font-size: 0.75rem; margin-bottom: 0.5rem;">
+                        Empowering local businesses worldwide.
+                    </p>
+                    <p style="color: rgba(249, 248, 245, 0.5); font-size: 0.75rem;">
+                        © 2026 Local Marketplace. All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleSlideMenu() {
+            const menu = document.getElementById('slideMenu');
+            const overlay = document.getElementById('menuOverlay');
+
+            menu.classList.toggle('open');
+            overlay.classList.toggle('active');
+
+            if (menu.classList.contains('open')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Global Search Functionality with Dropdown
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('globalSearch');
+            const searchDropdown = document.getElementById('searchDropdown');
+
+            // All products data (you can fetch this from backend or define here)
+            const allProducts = [
+                // This will be populated dynamically from the page
+            ];
+
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+                    const searchTerm = e.target.value.toLowerCase().trim();
+
+                    if (searchTerm.length === 0) {
+                        searchDropdown.classList.remove('show');
+                        resetProductDisplay();
+                        return;
+                    }
+
+                    // Find all product cards on the page
+                    const productCards = document.querySelectorAll('.product-card');
+                    const productSections = document.querySelectorAll('#products > div, .product-grid-full');
+
+                    let visibleCount = 0;
+                    let searchResults = [];
+
+                    productCards.forEach(card => {
+                        const productName = card.querySelector('.product-name');
+                        const storeName = card.querySelector('.store-name');
+
+                        if (productName) {
+                            const nameText = productName.textContent.toLowerCase();
+                            const storeText = storeName ? storeName.textContent.toLowerCase() : '';
+                            const productLink = card.closest('a');
+
+                            if (nameText.includes(searchTerm) || storeText.includes(searchTerm)) {
+                                productLink.style.display = 'block';
+                                visibleCount++;
+
+                                // Add to search results for dropdown
+                                const productImage = card.querySelector('.product-image');
+                                searchResults.push({
+                                    name: productName.textContent,
+                                    store: storeText,
+                                    image: productImage ? productImage.src : '',
+                                    link: productLink.href
+                                });
+                            } else {
+                                productLink.style.display = 'none';
+                            }
+                        }
+                    });
+
+                    // Show dropdown with results
+                    if (searchResults.length > 0) {
+                        showSearchDropdown(searchResults.slice(0, 5)); // Show top 5 results
+                    } else {
+                        showNoResults();
+                    }
+
+                    // Show/hide "No items found" message on page
+                    let noResultsMsg = document.getElementById('noResultsMessage');
+
+                    if (searchTerm && visibleCount === 0) {
+                        if (!noResultsMsg) {
+                            noResultsMsg = document.createElement('div');
+                            noResultsMsg.id = 'noResultsMessage';
+                            noResultsMsg.style.cssText = 'text-align: center; padding: 4rem 2rem; font-family: Inter, sans-serif;';
+                            noResultsMsg.innerHTML = `
+                                <i class="fa-solid fa-search" style="font-size: 3rem; color: #D1D5DB; margin-bottom: 1rem; display: block;"></i>
+                                <h3 style="font-size: 1.5rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">Oops! We couldn't find that.</h3>
+                                <p style="font-size: 0.875rem; color: #6B7280; margin-bottom: 1.5rem;">Try searching for 'Groceries' or 'Electronics'</p>
+                                <button onclick="clearSearch()" style="background: #8CC63F; color: white; padding: 0.75rem 2rem; border: none; border-radius: 50px; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                                    Clear Search
+                                </button>
+                            `;
+
+                            const productsContainer = document.querySelector('#products') || document.querySelector('.product-grid-full')?.parentElement;
+                            if (productsContainer) {
+                                productsContainer.appendChild(noResultsMsg);
+                            }
+                        } else {
+                            noResultsMsg.style.display = 'block';
+                        }
+                    } else if (noResultsMsg) {
+                        noResultsMsg.style.display = 'none';
+                    }
+
+                    // Show/hide section headers based on visible products
+                    productSections.forEach(section => {
+                        const sectionCards = section.querySelectorAll('.product-card');
+                        let hasVisibleCards = false;
+
+                        sectionCards.forEach(card => {
+                            if (card.closest('a').style.display !== 'none') {
+                                hasVisibleCards = true;
+                            }
+                        });
+
+                        const sectionHeader = section.previousElementSibling;
+                        if (sectionHeader && sectionHeader.classList.contains('section-header')) {
+                            sectionHeader.style.display = hasVisibleCards ? 'flex' : 'none';
+                        }
+                    });
+                });
+
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
+                        searchDropdown.classList.remove('show');
+                    }
+                });
+            }
+
+            function showSearchDropdown(results) {
+                let html = '';
+                results.forEach(result => {
+                    html += `
+                        <a href="${result.link}" class="search-result-item" style="text-decoration: none;">
+                            <img src="${result.image}" alt="${result.name}" class="search-result-image">
+                            <div class="search-result-info">
+                                <div class="search-result-name">${result.name}</div>
+                                <div class="search-result-category">${result.store}</div>
+                            </div>
+                        </a>
+                    `;
+                });
+                searchDropdown.innerHTML = html;
+                searchDropdown.classList.add('show');
+            }
+
+            function showNoResults() {
+                searchDropdown.innerHTML = `
+                    <div class="search-no-results">
+                        <i class="fa-solid fa-search"></i>
+                        <p style="font-weight: 600; margin-bottom: 0.25rem;">No products found</p>
+                        <p style="font-size: 0.813rem;">Try a different search term</p>
+                    </div>
+                `;
+                searchDropdown.classList.add('show');
+            }
+
+            function resetProductDisplay() {
+                const productCards = document.querySelectorAll('.product-card');
+                productCards.forEach(card => {
+                    card.closest('a').style.display = 'block';
+                });
+
+                const sectionHeaders = document.querySelectorAll('.section-header');
+                sectionHeaders.forEach(header => {
+                    header.style.display = 'flex';
+                });
+
+                const noResultsMsg = document.getElementById('noResultsMessage');
+                if (noResultsMsg) {
+                    noResultsMsg.style.display = 'none';
+                }
+            }
+
+            // Make clearSearch global
+            window.clearSearch = function() {
+                searchInput.value = '';
+                searchDropdown.classList.remove('show');
+                resetProductDisplay();
+            };
+        });
+
+        // Back to Top Button Functionality
+        const backToTopBtn = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.style.display = 'flex';
+            } else {
+                backToTopBtn.style.display = 'none';
+            }
+        });
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Accordion functionality for hamburger menu
+        function toggleAccordion(id) {
+            const content = document.getElementById(id + '-content');
+            const icon = document.getElementById(id + '-icon');
+
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                content.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Price slider in hamburger menu
+        const menuPriceSlider = document.getElementById('menuPriceSlider');
+        const menuPriceValue = document.getElementById('menuPriceValue');
+
+        if (menuPriceSlider && menuPriceValue) {
+            menuPriceSlider.addEventListener('input', function() {
+                menuPriceValue.textContent = '$' + this.value;
+            });
+        }
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

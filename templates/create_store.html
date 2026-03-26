@@ -1,0 +1,793 @@
+{% extends "base.html" %}
+
+{% block title %}Create Your Store | Local Marketplace{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Premium Background */
+    body {
+        background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%);
+    }
+
+    /* Circular Progress Bar with Connecting Line */
+    .progress-container {
+        max-width: 700px;
+        margin: 0 auto 80px;
+        position: relative;
+    }
+
+    .progress-steps-visual {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        padding: 0 40px;
+    }
+
+    /* Connecting Line */
+    .progress-line {
+        position: absolute;
+        top: 50%;
+        left: 80px;
+        right: 80px;
+        height: 2px;
+        background: #E5E7EB;
+        transform: translateY(-50%);
+        z-index: 0;
+    }
+
+    .progress-line-fill {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        background: linear-gradient(90deg, #8CC63F 0%, #7AB52F 100%);
+        width: 0%;
+        transition: width 0.6s ease;
+    }
+
+    /* Circular Step Indicator */
+    .progress-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .progress-circle {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: white;
+        border: 3px solid #E5E7EB;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        transition: all 0.4s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .progress-step.active .progress-circle {
+        border-color: #8CC63F;
+        background: linear-gradient(135deg, #8CC63F 0%, #7AB52F 100%);
+        color: white;
+        animation: pulse-step 2s infinite;
+        box-shadow: 0 8px 24px rgba(140, 198, 63, 0.4);
+    }
+
+    .progress-step.completed .progress-circle {
+        border-color: #8CC63F;
+        background: #8CC63F;
+        color: white;
+    }
+
+    .progress-step.completed .progress-circle {
+        border-color: #8CC63F;
+        background: #8CC63F;
+        color: white;
+        box-shadow: 0 4px 12px rgba(140, 198, 63, 0.3);
+    }
+
+    @keyframes pulse-step {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 8px 24px rgba(140, 198, 63, 0.4);
+        }
+        50% {
+            transform: scale(1.05);
+            box-shadow: 0 12px 32px rgba(140, 198, 63, 0.5);
+        }
+    }
+
+    .progress-step-label {
+        font-size: 0.875rem;
+        color: #9CA3AF;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    .progress-step.active .progress-step-label {
+        color: #8CC63F;
+        font-weight: 600;
+    }
+
+    /* Enhanced Glassmorphism Form Card */
+    .glass-form-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(30px);
+        -webkit-backdrop-filter: blur(30px);
+        border-radius: 40px;
+        padding: 60px;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Enhanced Input Styling */
+    .premium-input {
+        width: 100%;
+        padding: 20px 24px;
+        border: 2px solid #E5E7EB;
+        border-radius: 24px;
+        font-size: 1rem;
+        font-weight: 400;
+        outline: none;
+        transition: all 0.3s ease;
+        background: #FFFFFF;
+    }
+
+    .premium-input:focus {
+        border-color: #8CC63F;
+        box-shadow: 0 0 0 6px rgba(140, 198, 63, 0.15);
+        transform: translateY(-1px);
+    }
+
+    .premium-input::placeholder {
+        color: #9CA3AF;
+        font-weight: 300;
+    }
+
+    /* Enhanced CTA Button */
+    .cta-button {
+        background: linear-gradient(135deg, #8CC63F 0%, #7AB52F 100%);
+        color: white;
+        padding: 18px 60px;
+        border-radius: 50px;
+        border: none;
+        font-weight: 600;
+        font-size: 1.063rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 24px rgba(140, 198, 63, 0.35);
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .cta-button:hover {
+        box-shadow: 0 12px 32px rgba(140, 198, 63, 0.45);
+        transform: translateY(-3px);
+    }
+
+    .cta-button .arrow-icon {
+        transition: transform 0.3s ease;
+        font-size: 1rem;
+    }
+
+    .cta-button:hover .arrow-icon {
+        transform: translateX(6px);
+    }
+
+    /* Enhanced Benefit Cards */
+    .benefit-card {
+        text-align: center;
+        padding: 32px 24px;
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        transition: all 0.3s ease;
+    }
+
+    .benefit-card:hover {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        transform: translateY(-8px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .benefit-icon {
+        width: 72px;
+        height: 72px;
+        background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        transition: all 0.3s ease;
+    }
+
+    .benefit-card:hover .benefit-icon {
+        transform: scale(1.1);
+        box-shadow: 0 8px 20px rgba(140, 198, 63, 0.25);
+    }
+
+    .benefit-icon i {
+        color: #8CC63F;
+        font-size: 1.75rem;
+    }
+
+    /* Collapsible Accordion */
+    details summary {
+        list-style: none;
+    }
+
+    details summary::-webkit-details-marker {
+        display: none;
+    }
+
+    details[open] .rotate-icon {
+        transform: rotate(180deg);
+    }
+
+    /* Input Error State */
+    .input-error {
+        border-color: #ef4444 !important;
+        animation: shake 0.2s ease-in-out 0s 2;
+    }
+
+    @keyframes shake {
+        0% { margin-left: 0rem; }
+        25% { margin-left: 0.5rem; }
+        75% { margin-left: -0.5rem; }
+        100% { margin-left: 0rem; }
+    }
+
+    /* Step Container */
+    .step-container {
+        display: none;
+    }
+
+    .step-container.active {
+        display: block;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Verification Status */
+    .verification-loading {
+        text-align: center;
+        padding: 3rem;
+    }
+
+    .verification-spinner {
+        width: 60px;
+        height: 60px;
+        border: 4px solid var(--border-stone);
+        border-top-color: var(--local-green);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1.5rem;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .verification-success {
+        background: rgba(140, 198, 63, 0.1);
+        border: 2px solid var(--local-green);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-top: 2rem;
+    }
+
+    .verification-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--local-green);
+        color: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .glass-form-card {
+            padding: 40px 32px;
+            border-radius: 32px;
+        }
+
+        .progress-circle {
+            width: 50px;
+            height: 50px;
+            font-size: 1.25rem;
+        }
+
+        .cta-button {
+            padding: 16px 48px;
+            font-size: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container mx-auto px-8 py-20" style="max-width: 800px;">
+
+    <!-- Header -->
+    <div style="text-align: center; margin-bottom: 80px;">
+        <h1 style="font-family: 'Inter', sans-serif; font-size: 3rem; font-weight: 700; color: #111827; margin-bottom: 16px; letter-spacing: -0.02em;">Create Your Store</h1>
+        <p style="font-size: 1.125rem; color: #6B7280; font-weight: 400;">Start selling premium products today</p>
+    </div>
+
+    <!-- Circular Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-steps-visual">
+            <!-- Connecting Line -->
+            <div class="progress-line">
+                <div class="progress-line-fill" id="progress-line-fill" style="width: 0%;"></div>
+            </div>
+
+            <!-- Step 1: Store Info -->
+            <div class="progress-step active" id="progress-step-1">
+                <div class="progress-circle">
+                    <i class="fa-solid fa-store"></i>
+                </div>
+                <span class="progress-step-label">Store Info</span>
+            </div>
+
+            <!-- Step 2: Verification -->
+            <div class="progress-step" id="progress-step-2">
+                <div class="progress-circle">
+                    <i class="fa-solid fa-shield-check"></i>
+                </div>
+                <span class="progress-step-label">Verification</span>
+            </div>
+
+            <!-- Step 3: Complete -->
+            <div class="progress-step" id="progress-step-3">
+                <div class="progress-circle">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <span class="progress-step-label">Complete</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 1: Store Info Form -->
+    <div id="step-store-info" class="step-container">
+    <div class="glass-form-card">
+        <form id="seller-onboarding-form" action="/create-store" method="POST" style="display: flex; flex-direction: column; gap: 32px;">
+
+            <!-- Store Name -->
+            <div>
+                <label for="store_name" style="display: block; font-size: 0.875rem; font-weight: 400; color: #1F2937; margin-bottom: 8px;">
+                    Store Name <span style="color: #EF4444;">*</span>
+                </label>
+                <input type="text" id="store_name" name="store_name" required
+                    placeholder="Enter your store name"
+                    class="premium-input">
+                <p style="margin-top: 8px; font-size: 0.813rem; color: #9CA3AF; font-weight: 300;">This will be displayed to customers</p>
+            </div>
+
+            <!-- Business Email -->
+            <div>
+                <label for="business_email" style="display: block; font-size: 0.875rem; font-weight: 400; color: #1F2937; margin-bottom: 8px;">
+                    Business Email <span style="color: #EF4444;">*</span>
+                </label>
+                <input type="email" id="business_email" name="business_email" required
+                    placeholder="business@example.com"
+                    class="premium-input">
+                <p style="margin-top: 8px; font-size: 0.813rem; color: #9CA3AF; font-weight: 300;">For important store notifications</p>
+            </div>
+
+            <!-- Store Category -->
+            <div>
+                <label for="category" style="display: block; font-size: 0.875rem; font-weight: 400; color: #1F2937; margin-bottom: 8px;">
+                    Store Category <span style="color: #EF4444;">*</span>
+                </label>
+                <select id="category" name="category" required class="premium-input">
+                    <option value="">Select a category</option>
+                    <option value="groceries">Groceries</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="fashion">Fashion & Apparel</option>
+                    <option value="home-garden">Home & Garden</option>
+                    <option value="sports">Sports & Outdoors</option>
+                    <option value="beauty">Beauty & Personal Care</option>
+                    <option value="food">Food & Beverages</option>
+                    <option value="health">Health & Wellness</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <!-- Store Description -->
+            <div>
+                <label for="description" style="display: block; font-size: 0.875rem; font-weight: 400; color: #1F2937; margin-bottom: 8px;">
+                    Store Description
+                </label>
+                <textarea id="description" name="description" rows="4"
+                    placeholder="Tell customers about your store..."
+                    class="premium-input"
+                    style="resize: vertical;"></textarea>
+                <p style="margin-top: 8px; font-size: 0.813rem; color: #9CA3AF; font-weight: 300;">Optional</p>
+            </div>
+
+            <!-- Store URL -->
+            <div>
+                <label for="store_url" style="display: block; font-size: 0.875rem; font-weight: 400; color: #1F2937; margin-bottom: 8px;">
+                    Store URL
+                </label>
+                <div style="display: flex; align-items: center; border: 2px solid #E5E7EB; border-radius: 24px; overflow: hidden; background: #FFFFFF;">
+                    <span style="background: #F9FAFB; color: #9CA3AF; padding: 20px 24px; font-size: 1rem; font-weight: 300; border-right: 2px solid #E5E7EB;">localmarketplace.com/</span>
+                    <input type="text" id="store_url" name="store_url"
+                        placeholder="your-store"
+                        style="flex: 1; padding: 20px 24px; border: none; font-size: 1rem; font-weight: 300; outline: none;">
+                </div>
+            </div>
+
+            <!-- Collapsible Banking Section -->
+            <details class="group border-t border-gray-100 pt-8">
+                <summary class="flex justify-between items-center cursor-pointer text-gray-500 font-normal hover:text-gray-900 transition-colors" style="font-size: 0.938rem;">
+                    <span>Add Banking Information (Optional)</span>
+                    <span class="rotate-icon transition-transform duration-300">
+                        <i class="fa-solid fa-chevron-down" style="font-size: 0.875rem;"></i>
+                    </span>
+                </summary>
+                <div class="mt-8 grid grid-cols-1 gap-6">
+                    <!-- Bank Account Number -->
+                    <div>
+                        <label for="bank_account_number" style="display: block; font-size: 0.875rem; font-weight: 400; color: #1F2937; margin-bottom: 8px;">
+                            Bank Account Number
+                        </label>
+                        <input type="text" id="bank_account_number" name="bank_account_number"
+                            placeholder="Enter account number"
+                            class="premium-input">
+                    </div>
+
+                    <!-- Routing Number -->
+                    <div>
+                        <label for="routing_number" style="display: block; font-size: 0.875rem; font-weight: 400; color: #1F2937; margin-bottom: 8px;">
+                            Routing Number
+                        </label>
+                        <input type="text" id="routing_number" name="routing_number"
+                            placeholder="9-digit routing number"
+                            class="premium-input">
+                    </div>
+                </div>
+            </details>
+
+            <!-- Terms Checkbox -->
+            <div style="background: #F9FAFB; border-radius: 20px; padding: 20px; margin-top: 16px;">
+                <div style="display: flex; align-items: start; gap: 12px;">
+                    <input type="checkbox" id="seller_terms" name="seller_terms" required
+                        style="margin-top: 4px; width: 18px; height: 18px; accent-color: #8CC63F;">
+                    <label for="seller_terms" style="font-size: 0.875rem; color: #6B7280; font-weight: 300; line-height: 1.6;">
+                        I agree to the <a href="#" style="color: #4F46E5; text-decoration: none; font-weight: 400;">Terms and Conditions</a> and understand my responsibilities as a seller.
+                    </label>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 32px;">
+                <a href="/home" style="color: #9CA3AF; font-weight: 400; text-decoration: none; transition: color 0.3s ease; font-size: 1rem;"
+                   onmouseover="this.style.color='#111827'"
+                   onmouseout="this.style.color='#9CA3AF'">
+                    Cancel
+                </a>
+                <button type="button" id="continue-verification-btn" class="cta-button" onclick="goToStep2()">
+                    Continue to Verification
+                    <i class="fa-solid fa-arrow-right arrow-icon"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Step 2: Verification -->
+    <div id="step-verification" class="step-container">
+        <div class="glass-form-card">
+            <h2 style="font-size: 2rem; font-weight: 700; color: var(--primary-forest); margin-bottom: 1rem; text-align: center;">Verifying Your Business</h2>
+            <p style="text-align: center; color: var(--text-main); opacity: 0.7; margin-bottom: 3rem;">Please wait while we verify your business information</p>
+
+            <div id="verification-status" class="verification-loading">
+                <div class="verification-spinner"></div>
+                <p style="color: var(--text-main); font-weight: 500;">Connecting to Local Registry...</p>
+            </div>
+
+            <!-- Fail-Safe Skip Button (appears after 5 seconds) -->
+            <div style="display: flex; justify-content: center; padding-top: 32px;">
+                <button type="button" id="skip-verification-btn" class="cta-button" onclick="goToStep3()" style="display: none; background: #6B7280;">
+                    Skip to Finish
+                    <i class="fa-solid fa-forward arrow-icon"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 3: Complete (Pending Approval) -->
+    <div id="step-complete" class="step-container">
+        <div class="glass-form-card" style="text-align: center;">
+            <div style="width: 100px; height: 100px; background: rgba(140, 198, 63, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem;">
+                <i class="fa-solid fa-clock" style="font-size: 3rem; color: var(--local-green);"></i>
+            </div>
+
+            <h2 style="font-size: 2.5rem; font-weight: 700; color: var(--primary-forest); margin-bottom: 1rem;">Pending Approval</h2>
+
+            <p style="font-size: 1.125rem; color: var(--text-main); opacity: 0.8; margin-bottom: 2rem; line-height: 1.6;">
+                Your store "<span id="store-name-display" style="font-weight: 600; color: var(--local-green);">Your Store</span>" is being reviewed by our team.
+            </p>
+
+            <div style="background: rgba(140, 198, 63, 0.1); border-radius: 20px; padding: 2rem; margin-bottom: 2rem;">
+                <p style="font-size: 0.938rem; color: var(--text-main); opacity: 0.7; margin-bottom: 0.5rem;">Expected Review Time</p>
+                <p style="font-size: 1.5rem; font-weight: 700; color: var(--primary-forest);">24 Hours</p>
+            </div>
+
+            <p style="font-size: 0.875rem; color: var(--text-main); opacity: 0.6; margin-bottom: 2rem;">
+                We'll send you an email at <span id="email-display" style="font-weight: 600;">your-email@example.com</span> once your store is approved.
+            </p>
+
+            <a href="/dashboard" class="cta-button">
+                Go to Dashboard
+                <i class="fa-solid fa-arrow-right arrow-icon"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Benefits Section -->
+    <div style="margin-top: 100px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;">
+        <div class="benefit-card">
+            <div class="benefit-icon">
+                <i class="fa-solid fa-dollar-sign"></i>
+            </div>
+            <h3 style="font-size: 1.125rem; font-weight: 600; color: #111827; margin-bottom: 8px;">Low Fees</h3>
+            <p style="font-size: 0.938rem; color: #6B7280; font-weight: 400;">Competitive rates that help you grow</p>
+        </div>
+        <div class="benefit-card">
+            <div class="benefit-icon">
+                <i class="fa-solid fa-users"></i>
+            </div>
+            <h3 style="font-size: 1.125rem; font-weight: 600; color: #111827; margin-bottom: 8px;">Large Audience</h3>
+            <p style="font-size: 0.938rem; color: #6B7280; font-weight: 400;">Reach thousands of local customers</p>
+        </div>
+        <div class="benefit-card">
+            <div class="benefit-icon">
+                <i class="fa-solid fa-headset"></i>
+            </div>
+            <h3 style="font-size: 1.125rem; font-weight: 600; color: #111827; margin-bottom: 8px;">24/7 Support</h3>
+            <p style="font-size: 0.938rem; color: #6B7280; font-weight: 400;">Always here to help you succeed</p>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const sellerForm = document.getElementById('seller-onboarding-form');
+    const continueBtn = document.getElementById('continue-verification-btn');
+    const inputs = sellerForm.querySelectorAll('input[required], textarea[required], select[required]');
+
+    // Show first step on load
+    document.getElementById('step-store-info').classList.add('active');
+
+    // Function to check if all fields are valid
+    const validateForm = () => {
+        let allValid = true;
+
+        inputs.forEach(input => {
+            if (!input.value.trim() || (input.type === 'checkbox' && !input.checked)) {
+                allValid = false;
+            }
+        });
+
+        // Toggle button state and styling
+        if (allValid) {
+            continueBtn.disabled = false;
+            continueBtn.style.opacity = '1';
+            continueBtn.style.cursor = 'pointer';
+        } else {
+            continueBtn.disabled = true;
+            continueBtn.style.opacity = '0.5';
+            continueBtn.style.cursor = 'not-allowed';
+        }
+    };
+
+    // Listen for typing/changes in all inputs
+    inputs.forEach(input => {
+        input.addEventListener('input', validateForm);
+        input.addEventListener('change', validateForm);
+    });
+
+    // Initial check on load
+    validateForm();
+
+    // Auto-generate store URL slug from store name
+    const storeNameInput = document.querySelector('input[name="store_name"]');
+    const storeUrlInput = document.querySelector('input[name="store_url"]');
+
+    if (storeNameInput && storeUrlInput) {
+        storeNameInput.addEventListener('input', (e) => {
+            const slug = e.target.value
+                .toLowerCase()
+                .replace(/ /g, '-')
+                .replace(/[^\w-]+/g, '');
+            storeUrlInput.value = slug;
+        });
+    }
+});
+
+// Multi-Step Navigation Logic - FORCE REPAIR
+let verificationTimer = null;
+let failsafeTimer = null;
+
+function goToStep1() {
+    document.getElementById('step-store-info').classList.add('active');
+    document.getElementById('step-verification').classList.remove('active');
+    document.getElementById('step-complete').classList.remove('active');
+    updateProgressBar(0);
+}
+
+function goToStep2() {
+    console.log("Moving to Step 2: Verification");
+
+    // Capture store name and email for final step
+    const storeName = document.querySelector('input[name="store_name"]').value;
+    const email = document.querySelector('input[name="business_email"]').value;
+    document.getElementById('store-name-display').textContent = storeName || 'Your Store';
+    document.getElementById('email-display').textContent = email || 'your-email@example.com';
+
+    // Hide step 1, show step 2
+    document.getElementById('step-store-info').classList.remove('active');
+    document.getElementById('step-verification').classList.add('active');
+    document.getElementById('step-complete').classList.remove('active');
+
+    // Update progress bar
+    updateProgressBar(1);
+
+    // Start verification simulation
+    startVerification();
+
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goToStep3() {
+    console.log("Moving to Step 3: Complete");
+
+    // Clear any timers
+    if (verificationTimer) clearTimeout(verificationTimer);
+    if (failsafeTimer) clearTimeout(failsafeTimer);
+
+    // Hide step 2, show step 3
+    document.getElementById('step-store-info').classList.remove('active');
+    document.getElementById('step-verification').classList.remove('active');
+    document.getElementById('step-complete').classList.add('active');
+
+    // Update progress bar to completed state
+    updateProgressBar(2);
+
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function startVerification() {
+    console.log("Verification Started...");
+
+    const statusDiv = document.getElementById('verification-status');
+    const skipBtn = document.getElementById('skip-verification-btn');
+
+    // Show loading state
+    statusDiv.innerHTML = `
+        <div class="verification-spinner"></div>
+        <p style="color: var(--text-main); font-weight: 500;">Checking Business Database...</p>
+        <p style="font-size: 0.813rem; color: var(--text-main); opacity: 0.5; margin-top: 1rem;">This may take a few seconds...</p>
+    `;
+
+    // Hide skip button initially
+    if (skipBtn) skipBtn.style.display = 'none';
+
+    // AUTOMATIC TRANSITION: After 3 seconds, show success and move to step 3
+    verificationTimer = setTimeout(() => {
+        console.log("Verification Successful. Auto-moving to Step 3...");
+
+        // Show success message briefly
+        statusDiv.innerHTML = `
+            <div class="verification-success">
+                <div class="verification-badge">
+                    <i class="fa-solid fa-check-circle"></i>
+                    <span>Verified</span>
+                </div>
+                <h3 style="font-size: 1.5rem; font-weight: 700; color: var(--primary-forest); margin-bottom: 1rem;">Business Identity Confirmed</h3>
+                <div style="text-align: left; margin-top: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border-stone);">
+                        <span style="color: var(--text-main); opacity: 0.7;">Business Status:</span>
+                        <span style="font-weight: 600; color: #8CC63F;">ACTIVE</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border-stone);">
+                        <span style="color: var(--text-main); opacity: 0.7;">Registry:</span>
+                        <span style="font-weight: 600; color: var(--primary-forest);">Local Trade Directory</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.75rem 0;">
+                        <span style="color: var(--text-main); opacity: 0.7;">Trust Score:</span>
+                        <span style="font-weight: 600; color: #8CC63F;">98%</span>
+                    </div>
+                </div>
+                <p style="font-size: 0.813rem; color: var(--text-main); opacity: 0.6; margin-top: 1rem; text-align: center;">
+                    <i class="fa-solid fa-info-circle"></i> Data sourced from OpenCorporate API (Static Simulation)
+                </p>
+            </div>
+        `;
+
+        // Automatically move to step 3 after showing success (1 second delay)
+        setTimeout(() => {
+            goToStep3();
+        }, 1000);
+    }, 3000);
+
+    // FAIL-SAFE: Show skip button after 5 seconds
+    failsafeTimer = setTimeout(() => {
+        if (skipBtn) {
+            skipBtn.style.display = 'inline-flex';
+        }
+    }, 5000);
+}
+
+function updateProgressBar(stepIndex) {
+    console.log("Updating progress bar to step:", stepIndex);
+
+    // Update progress line fill
+    const progressLineFill = document.getElementById('progress-line-fill');
+    if (progressLineFill) {
+        const fillPercentage = (stepIndex / 2) * 100; // 0%, 50%, 100%
+        progressLineFill.style.width = fillPercentage + '%';
+    }
+
+    // Update step circles
+    for (let i = 1; i <= 3; i++) {
+        const stepElement = document.getElementById(`progress-step-${i}`);
+        if (!stepElement) continue;
+
+        const circle = stepElement.querySelector('.progress-circle');
+
+        if (i < stepIndex + 1) {
+            // Completed steps - green with checkmark
+            stepElement.classList.remove('active');
+            stepElement.classList.add('completed');
+            if (circle) {
+                circle.style.backgroundColor = '#8CC63F';
+                circle.style.borderColor = '#8CC63F';
+                circle.style.color = 'white';
+            }
+        } else if (i === stepIndex + 1) {
+            // Current active step
+            stepElement.classList.remove('completed');
+            stepElement.classList.add('active');
+        } else {
+            // Future steps
+            stepElement.classList.remove('active', 'completed');
+        }
+    }
+}
+</script>
+{% endblock %}

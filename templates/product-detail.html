@@ -1,0 +1,412 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - Local Marketplace{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Premium Product Detail Page */
+    body {
+        background: #FFFFFF;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: #6B7280;
+        margin-bottom: 3rem;
+    }
+
+    .breadcrumb a {
+        color: #6B7280;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .breadcrumb a:hover {
+        color: #8CC63F;
+    }
+
+    /* Split-Screen Layout */
+    .product-detail-grid {
+        display: grid;
+        grid-template-columns: 60% 40%;
+        gap: 4rem;
+        align-items: start;
+    }
+
+    /* Left Side - Product Image */
+    .product-image-large {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        border-radius: 2rem;
+        overflow: hidden;
+        background: #F9FAFB;
+        position: sticky;
+        top: 120px;
+    }
+
+    .product-image-large img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Right Side - Product Info */
+    .product-info-section {
+        padding: 2rem 0;
+    }
+
+    .product-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #1F2937;
+        line-height: 1.2;
+        margin-bottom: 1rem;
+    }
+
+    .product-price {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #8CC63F;
+        margin-bottom: 0.5rem;
+    }
+
+    .product-old-price {
+        font-size: 1.5rem;
+        color: #9CA3AF;
+        text-decoration: line-through;
+        margin-left: 1rem;
+    }
+
+    .discount-badge-large {
+        display: inline-block;
+        background: #4F46E5;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-left: 1rem;
+    }
+
+    .product-description {
+        font-size: 1rem;
+        color: #6B7280;
+        line-height: 1.8;
+        margin: 2rem 0;
+        padding: 1.5rem;
+        background: #F9FAFB;
+        border-radius: 1rem;
+    }
+
+    /* Selectors */
+    .selector-group {
+        margin-bottom: 2rem;
+    }
+
+    .selector-label {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #374151;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+
+    .selector-dropdown {
+        width: 100%;
+        padding: 1rem 1.25rem;
+        border: 2px solid #E5E7EB;
+        border-radius: 12px;
+        font-size: 1rem;
+        color: #111827;
+        background: white;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        outline: none;
+    }
+
+    .selector-dropdown:hover {
+        border-color: #8CC63F;
+    }
+
+    .selector-dropdown:focus {
+        border-color: #8CC63F;
+        box-shadow: 0 0 0 3px rgba(140, 198, 63, 0.1);
+    }
+
+    /* Quantity Selector */
+    .quantity-selector {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border: 2px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 0.5rem;
+        width: fit-content;
+    }
+
+    .quantity-btn {
+        width: 40px;
+        height: 40px;
+        border: none;
+        background: #F9FAFB;
+        color: #111827;
+        font-size: 1.25rem;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .quantity-btn:hover {
+        background: #8CC63F;
+        color: white;
+    }
+
+    .quantity-value {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #111827;
+        min-width: 40px;
+        text-align: center;
+    }
+
+    /* Add to Cart Button */
+    .add-to-cart-btn {
+        width: 100%;
+        padding: 1.25rem 2rem;
+        background: #8CC63F;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.125rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+
+    .add-to-cart-btn:hover {
+        background: #7AB52F;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(140, 198, 63, 0.4);
+    }
+
+    /* Delivery Information */
+    .delivery-info {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background: #F9FAFB;
+        border-radius: 1rem;
+    }
+
+    .delivery-info h3 {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #374151;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 1rem;
+    }
+
+    .delivery-info p {
+        font-size: 0.875rem;
+        color: #6B7280;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+
+    .delivery-info p:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Store Badge */
+    .store-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: #F3F4F6;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        color: #6B7280;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .product-detail-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .product-image-large {
+            position: relative;
+            top: 0;
+        }
+
+        .product-title {
+            font-size: 2rem;
+        }
+
+        .product-price {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Main Container -->
+<div style="background: #FFFFFF; min-height: 100vh; padding: 3rem 0;">
+    <div class="container mx-auto px-12">
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="/home">Home</a>
+            <span>›</span>
+            <a href="/products">Products</a>
+            <span>›</span>
+            {% if category %}
+            <a href="/category/{{ category.slug }}">{{ category.name }}</a>
+            <span>›</span>
+            {% endif %}
+            <span style="color: #111827; font-weight: 600;">{{ product.name }}</span>
+        </div>
+
+        <!-- Split-Screen Layout -->
+        <div class="product-detail-grid">
+
+            <!-- LEFT: Large Product Image (60%) -->
+            <div class="product-image-large">
+                <img src="{{ product.image }}" alt="{{ product.name }}">
+            </div>
+
+            <!-- RIGHT: Product Information (40%) -->
+            <div class="product-info-section">
+
+                <!-- Store Badge -->
+                <div class="store-badge">
+                    <i class="fa-solid fa-store"></i>
+                    <span>{{ product.store }}</span>
+                </div>
+
+                <!-- Product Title -->
+                <h1 class="product-title">{{ product.name }}</h1>
+
+                <!-- Price -->
+                <div style="margin-bottom: 2rem;">
+                    <span class="product-price">${{ product.price }}</span>
+                    <span class="product-old-price">${{ product.old_price }}</span>
+                    <span class="discount-badge-large">{{ product.discount }} OFF</span>
+                </div>
+
+                <!-- Rating -->
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 2rem;">
+                    <div style="display: flex; gap: 0.25rem;">
+                        <span style="color: #FBBF24; font-size: 1.25rem;">★</span>
+                        <span style="color: #FBBF24; font-size: 1.25rem;">★</span>
+                        <span style="color: #FBBF24; font-size: 1.25rem;">★</span>
+                        <span style="color: #FBBF24; font-size: 1.25rem;">★</span>
+                        <span style="color: #FBBF24; font-size: 1.25rem;">★</span>
+                    </div>
+                    <span style="font-size: 1rem; color: #6B7280;">({{ product.rating }}) • 127 reviews</span>
+                </div>
+
+                <!-- Product Description -->
+                <div class="product-description">
+                    <h3 style="font-size: 0.875rem; font-weight: 600; color: #374151; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">Product Description</h3>
+                    <p>Experience premium quality with {{ product.name }}. Carefully selected and sourced from trusted suppliers, this product offers exceptional value and satisfaction. Perfect for everyday use or special occasions.</p>
+                </div>
+
+                <!-- Size/Variant Selector -->
+                <div class="selector-group">
+                    <label class="selector-label">Select Size</label>
+                    <select class="selector-dropdown">
+                        <option>Small</option>
+                        <option selected>Medium</option>
+                        <option>Large</option>
+                        <option>Extra Large</option>
+                    </select>
+                </div>
+
+                <!-- Color Selector -->
+                <div class="selector-group">
+                    <label class="selector-label">Select Color</label>
+                    <select class="selector-dropdown">
+                        <option selected>Default</option>
+                        <option>Black</option>
+                        <option>White</option>
+                        <option>Blue</option>
+                        <option>Red</option>
+                    </select>
+                </div>
+
+                <!-- Quantity Selector -->
+                <div class="selector-group">
+                    <label class="selector-label">Quantity</label>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn" onclick="decreaseQuantity()">
+                            <i class="fa-solid fa-minus"></i>
+                        </button>
+                        <span class="quantity-value" id="quantityValue">1</span>
+                        <button class="quantity-btn" onclick="increaseQuantity()">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Add to Cart Button -->
+                <button class="add-to-cart-btn">
+                    <i class="fa-solid fa-cart-plus" style="font-size: 1.25rem;"></i>
+                    <span>Add to Cart</span>
+                </button>
+
+                <!-- Delivery Information -->
+                <div class="delivery-info">
+                    <h3>Delivery Information</h3>
+                    <p><i class="fa-solid fa-truck" style="margin-right: 0.5rem; color: #8CC63F;"></i> Free delivery on orders over $50</p>
+                    <p><i class="fa-solid fa-clock" style="margin-right: 0.5rem; color: #8CC63F;"></i> Estimated delivery: 2-4 business days</p>
+                    <p><i class="fa-solid fa-rotate-left" style="margin-right: 0.5rem; color: #8CC63F;"></i> 30-day return policy</p>
+                    <p><i class="fa-solid fa-shield-halved" style="margin-right: 0.5rem; color: #8CC63F;"></i> Secure payment guaranteed</p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let quantity = 1;
+
+    function increaseQuantity() {
+        quantity++;
+        document.getElementById('quantityValue').textContent = quantity;
+    }
+
+    function decreaseQuantity() {
+        if (quantity > 1) {
+            quantity--;
+            document.getElementById('quantityValue').textContent = quantity;
+        }
+    }
+</script>
+{% endblock %}

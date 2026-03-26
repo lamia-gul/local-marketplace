@@ -1,0 +1,953 @@
+{% extends "base.html" %}
+
+{% block title %}{{ category.name }} - Local Marketplace{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Premium Full-Width Category Page */
+    body {
+        background: #FFFFFF;
+    }
+
+    /* Category Hero Header */
+    .category-hero {
+        position: relative;
+        height: 400px;
+        overflow: hidden;
+        margin-bottom: 4rem;
+    }
+
+    .category-hero-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .category-hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3));
+        display: flex;
+        align-items: flex-end;
+        padding: 3rem;
+    }
+
+    .category-hero-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    .category-hero-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .category-hero-title {
+        font-size: 4rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 1rem;
+        line-height: 1.1;
+    }
+
+    .category-hero-description {
+        font-size: 1.25rem;
+        color: rgba(255, 255, 255, 0.9);
+        max-width: 600px;
+    }
+
+    /* Filter Sidebar */
+    .filter-sidebar {
+        width: 20%;
+        padding: 2rem;
+        background: #FFFFFF;
+        border-right: 1px solid #E5E7EB;
+        position: sticky;
+        top: 100px;
+        height: fit-content;
+    }
+
+    .filter-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #E5E7EB;
+    }
+
+    .filter-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #111827;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .filter-toggle {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #6B7280;
+        cursor: pointer;
+    }
+
+    .filter-section {
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #F3F4F6;
+    }
+
+    .filter-section:last-child {
+        border-bottom: none;
+    }
+
+    .filter-section-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #111827;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 1rem;
+    }
+
+    .filter-option {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+        cursor: pointer;
+    }
+
+    .filter-checkbox {
+        width: 18px;
+        height: 18px;
+        border: 2px solid #D1D5DB;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        accent-color: #8CC63F;
+    }
+
+    .filter-checkbox:checked {
+        background: #8CC63F;
+        border-color: #8CC63F;
+    }
+
+    .filter-label {
+        font-size: 0.938rem;
+        color: #6B7280;
+        cursor: pointer;
+    }
+
+    .price-slider {
+        width: 100%;
+        height: 6px;
+        border-radius: 3px;
+        background: #E5E7EB;
+        outline: none;
+        -webkit-appearance: none;
+        margin: 1rem 0;
+    }
+
+    .price-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #8CC63F;
+        cursor: pointer;
+    }
+
+    .price-slider::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #8CC63F;
+        cursor: pointer;
+        border: none;
+    }
+
+    .price-value {
+        font-size: 0.875rem;
+        color: #8CC63F;
+        font-weight: 600;
+    }
+
+    .sort-dropdown {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid #E5E7EB;
+        border-radius: 8px;
+        font-size: 0.938rem;
+        color: #111827;
+        outline: none;
+        cursor: pointer;
+        background: white;
+        transition: all 0.2s ease;
+    }
+
+    .sort-dropdown:focus {
+        border-color: #8CC63F;
+        box-shadow: 0 0 0 3px rgba(140, 198, 63, 0.1);
+    }
+
+    .availability-toggle {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .toggle-switch {
+        position: relative;
+        width: 48px;
+        height: 24px;
+        background: #D1D5DB;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .toggle-switch.active {
+        background: #8CC63F;
+    }
+
+    .toggle-slider {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 20px;
+        height: 20px;
+        background: white;
+        border-radius: 50%;
+        transition: transform 0.3s ease;
+    }
+
+    .toggle-switch.active .toggle-slider {
+        transform: translateX(24px);
+    }
+
+    /* Main Content Area */
+    .content-wrapper {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .products-container {
+        flex: 1;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: #6B7280;
+    }
+
+    .breadcrumb a {
+        color: #6B7280;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .breadcrumb a:hover {
+        color: #8CC63F;
+    }
+
+    /* Horizontal Category Slider */
+    .category-slider {
+        display: flex;
+        gap: 1rem;
+        overflow-x: auto;
+        padding: 1.5rem 0;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .category-slider::-webkit-scrollbar {
+        display: none;
+    }
+
+    .category-pill {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: #F9FAFB;
+        border: 2px solid transparent;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #6B7280;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .category-pill:hover {
+        background: #8CC63F;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(140, 198, 63, 0.3);
+    }
+
+    .category-pill.active {
+        background: #8CC63F;
+        color: white;
+        border-color: #8CC63F;
+    }
+
+    .category-icon {
+        font-size: 1.25rem;
+    }
+
+    /* Product Grid - Exactly 4 in a Row (Full Width) */
+    .product-grid-full {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem; /* 32px gap */
+    }
+
+    /* Product Card - Flex Column for Alignment */
+    .product-card {
+        display: flex;
+        flex-direction: column;
+        background: #FFFFFF;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .product-card:hover {
+        transform: translateY(-8px);
+    }
+
+    /* Square Image Container - Fixed 1:1 Aspect Ratio */
+    .product-image-wrapper {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1 / 1; /* Perfect square */
+        background: #F9FAFB;
+        border-radius: 20px;
+        overflow: hidden;
+        margin-bottom: 1rem;
+    }
+
+    .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Prevents distortion */
+        transition: transform 0.4s ease;
+    }
+
+    .product-card:hover .product-image {
+        transform: scale(1.05);
+    }
+
+    /* Quick to Cart Button */
+    .quick-cart-btn {
+        position: absolute;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        background: #8CC63F;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        opacity: 0;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(140, 198, 63, 0.3);
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .product-card:hover .quick-cart-btn {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    .quick-cart-btn:hover {
+        background: #7AB52F;
+        box-shadow: 0 6px 16px rgba(140, 198, 63, 0.4);
+    }
+
+    /* Toast Notification */
+    .toast-notification {
+        position: fixed;
+        top: 100px;
+        right: 30px;
+        background: #8CC63F;
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 50px;
+        font-size: 0.938rem;
+        font-weight: 600;
+        box-shadow: 0 8px 24px rgba(140, 198, 63, 0.4);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        opacity: 0;
+        transform: translateX(400px);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .toast-notification.show {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .toast-notification i {
+        font-size: 1.25rem;
+    }
+
+    /* Product Details */
+    .product-details {
+        text-align: left;
+    }
+
+    .product-name {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 0.25rem;
+        line-height: 1.4;
+    }
+
+    .store-name {
+        font-size: 0.75rem;
+        color: #9CA3AF;
+        margin-bottom: 0.5rem;
+    }
+
+    .product-price {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #8CC63F;
+    }
+
+    .product-old-price {
+        font-size: 0.875rem;
+        color: #9CA3AF;
+        text-decoration: line-through;
+        margin-left: 0.5rem;
+    }
+
+    /* Discount Badge */
+    .discount-badge {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        background: #4F46E5;
+        color: white;
+        padding: 0.375rem 0.875rem;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        z-index: 10;
+    }
+
+    /* Responsive - Exactly 4 on Desktop, 2 on Mobile */
+    @media (max-width: 1024px) {
+        .product-grid-full {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .content-wrapper {
+            flex-direction: column;
+        }
+
+        .filter-sidebar {
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: -100%;
+            height: 100vh;
+            z-index: 1000;
+            transition: left 0.3s ease;
+            overflow-y: auto;
+            border-right: none;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-sidebar.open {
+            left: 0;
+        }
+
+        .filter-toggle {
+            display: block;
+        }
+
+        .filter-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .filter-overlay.active {
+            display: block;
+        }
+
+        .mobile-filter-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: #8CC63F;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 0.938rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+        }
+    }
+
+    @media (min-width: 1025px) {
+        .mobile-filter-btn {
+            display: none;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .product-grid-full {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .category-hero {
+            height: 300px;
+        }
+
+        .category-hero-title {
+            font-size: 2.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Category Hero Header -->
+<div class="category-hero">
+    <img src="{{ category.profile_image }}" alt="{{ category.name }}" class="category-hero-image">
+    <div class="category-hero-overlay">
+        <div class="category-hero-content">
+            <span class="category-hero-icon">{{ category.icon }}</span>
+            <h1 class="category-hero-title">{{ category.name }}</h1>
+            <p class="category-hero-description">{{ category.description }}</p>
+        </div>
+    </div>
+</div>
+
+<!-- Main Container -->
+<div style="background: #FFFFFF; min-height: 100vh; padding: 0 0 3rem 0;">
+    <div class="container mx-auto px-12">
+
+        <!-- Page Header -->
+        <div style="margin-bottom: 2rem;">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb" style="margin-bottom: 1.5rem;">
+                <a href="/home">Home</a>
+                <span>›</span>
+                <a href="/products">Products</a>
+                <span>›</span>
+                <span style="color: #111827; font-weight: 600;">{{ category.name }}</span>
+            </div>
+
+            <!-- Sorting Bar -->
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <!-- LEFT: Product Count -->
+                <p style="font-size: 0.875rem; color: #6B7280;">
+                    Showing <span style="font-weight: 600; color: #111827;" id="productCount">{{ products|length }}</span> products
+                </p>
+
+                <!-- Mobile Filter Button -->
+                <button class="mobile-filter-btn" onclick="toggleFilterSidebar()">
+                    <i class="fa-solid fa-filter"></i>
+                    Filters
+                </button>
+
+                <!-- RIGHT: Price and Sorting Dropdowns -->
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <select style="padding: 0.625rem 1.25rem; border: 1px solid #E5E7EB; border-radius: 50px; font-size: 0.875rem; color: #111827; outline: none; cursor: pointer; background: white;">
+                        <option>All Prices</option>
+                        <option>Under $25</option>
+                        <option>$25 - $50</option>
+                        <option>$50 - $100</option>
+                        <option>Over $100</option>
+                    </select>
+                    <select style="padding: 0.625rem 1.25rem; border: 1px solid #E5E7EB; border-radius: 50px; font-size: 0.875rem; color: #111827; outline: none; cursor: pointer; background: white;">
+                        <option>Sort: Featured</option>
+                        <option>Price: Low to High</option>
+                        <option>Price: High to Low</option>
+                        <option>Newest First</option>
+                        <option>Best Sellers</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Horizontal Category Slider -->
+        <div style="border-bottom: 1px solid #F3F4F6; margin-bottom: 3rem;">
+            <div class="category-slider">
+                <a href="/products" class="category-pill">
+                    <span class="category-icon">🔥</span>
+                    <span>All Categories</span>
+                </a>
+                {% for cat in all_categories %}
+                <a href="/category/{{ cat.slug }}" class="category-pill {% if cat.slug == category.slug %}active{% endif %}">
+                    <span class="category-icon">{{ cat.icon }}</span>
+                    <span>{{ cat.name }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Filter Overlay (Mobile) -->
+        <div class="filter-overlay" id="filterOverlay" onclick="toggleFilterSidebar()"></div>
+
+        <!-- Content Wrapper (Sidebar + Products) -->
+        <div class="content-wrapper">
+            <!-- Filter Sidebar -->
+            <aside class="filter-sidebar" id="filterSidebar">
+                <div class="filter-header">
+                    <h3 class="filter-title">
+                        <i class="fa-solid fa-sliders"></i>
+                        Filters
+                    </h3>
+                    <button class="filter-toggle" onclick="toggleFilterSidebar()">
+                        <i class="fa-solid fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- Price Range Filter -->
+                <div class="filter-section">
+                    <h4 class="filter-section-title">Price Range</h4>
+                    <div class="filter-option">
+                        <input type="checkbox" class="filter-checkbox" id="price-under-50" value="0-50" onchange="applyFilters()">
+                        <label for="price-under-50" class="filter-label">Under $50</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" class="filter-checkbox" id="price-50-100" value="50-100" onchange="applyFilters()">
+                        <label for="price-50-100" class="filter-label">$50 - $100</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" class="filter-checkbox" id="price-100-plus" value="100-999999" onchange="applyFilters()">
+                        <label for="price-100-plus" class="filter-label">$100+</label>
+                    </div>
+
+                    <!-- Price Slider -->
+                    <div style="margin-top: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <span style="font-size: 0.875rem; color: #6B7280;">Max Price:</span>
+                            <span class="price-value" id="priceValue">$500</span>
+                        </div>
+                        <input type="range" class="price-slider" id="priceSlider" min="0" max="500" value="500" oninput="updatePriceValue(this.value); applyFilters()">
+                    </div>
+                </div>
+
+                <!-- Availability Filter -->
+                <div class="filter-section">
+                    <h4 class="filter-section-title">Availability</h4>
+                    <div class="availability-toggle">
+                        <div class="toggle-switch" id="stockToggle" onclick="toggleStock()">
+                            <div class="toggle-slider"></div>
+                        </div>
+                        <label class="filter-label">In Stock Only</label>
+                    </div>
+                </div>
+
+                <!-- Sort By Filter -->
+                <div class="filter-section">
+                    <h4 class="filter-section-title">Sort By</h4>
+                    <select class="sort-dropdown" id="sortDropdown" onchange="applyFilters()">
+                        <option value="featured">Featured</option>
+                        <option value="newest">Newest</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                    </select>
+                </div>
+
+                <!-- Clear Filters Button -->
+                <button onclick="clearFilters()" style="width: 100%; padding: 0.75rem; background: #F3F4F6; color: #6B7280; border: none; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease;"
+                        onmouseover="this.style.background='#E5E7EB'"
+                        onmouseout="this.style.background='#F3F4F6'">
+                    Clear All Filters
+                </button>
+            </aside>
+
+            <!-- Products Container -->
+            <div class="products-container">
+                <!-- Full-Width Product Grid - All 12 Products (5 columns on XL, 4 on large) -->
+        <div class="product-grid-full">
+            {% for product in products %}
+            <a href="/product/{{ product.id }}" style="text-decoration: none; cursor: pointer;">
+                <div class="product-card">
+                    <!-- Square Image Container (1:1 Ratio) -->
+                    <div class="product-image-wrapper">
+                        <!-- Discount Badge -->
+                        <div class="discount-badge">{{ product.discount }} OFF</div>
+
+                        <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
+
+                        <!-- Quick to Cart Button (appears on hover) -->
+                        <button class="quick-cart-btn" onclick="event.preventDefault(); event.stopPropagation(); addToCart('{{ product.name }}', {{ product.id }});">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            Quick to Cart
+                        </button>
+                    </div>
+
+                    <!-- Product Details -->
+                    <div class="product-details">
+                        <h3 class="product-name">{{ product.name }}</h3>
+                        <p class="store-name">{{ product.store }}</p>
+                        <div>
+                            <span class="product-price">${{ product.price }}</span>
+                            <span class="product-old-price">${{ product.old_price }}</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let inStockOnly = false;
+
+    // Toggle Filter Sidebar (Mobile)
+    function toggleFilterSidebar() {
+        const sidebar = document.getElementById('filterSidebar');
+        const overlay = document.getElementById('filterOverlay');
+
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('active');
+
+        if (sidebar.classList.contains('open')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+    }
+
+    // Update Price Value Display
+    function updatePriceValue(value) {
+        document.getElementById('priceValue').textContent = '$' + value;
+    }
+
+    // Toggle Stock Availability
+    function toggleStock() {
+        const toggle = document.getElementById('stockToggle');
+        toggle.classList.toggle('active');
+        inStockOnly = toggle.classList.contains('active');
+        applyFilters();
+    }
+
+    // Apply All Filters
+    function applyFilters() {
+        const productCards = document.querySelectorAll('.product-grid-full > a');
+        let visibleCount = 0;
+
+        // Get filter values
+        const priceRanges = [];
+        document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+            if (cb.value.includes('-')) {
+                priceRanges.push(cb.value);
+            }
+        });
+
+        const maxPrice = parseInt(document.getElementById('priceSlider').value);
+        const sortBy = document.getElementById('sortDropdown').value;
+
+        // Create array of products with their data
+        const productsArray = Array.from(productCards).map(card => {
+            const priceText = card.querySelector('.product-price').textContent.replace('$', '');
+            const price = parseFloat(priceText);
+            const name = card.querySelector('.product-name').textContent;
+
+            return {
+                element: card,
+                price: price,
+                name: name,
+                visible: true
+            };
+        });
+
+        // Apply filters
+        productsArray.forEach(product => {
+            let show = true;
+
+            // Price range filter
+            if (priceRanges.length > 0) {
+                let matchesRange = false;
+                priceRanges.forEach(range => {
+                    const [min, max] = range.split('-').map(Number);
+                    if (product.price >= min && product.price <= max) {
+                        matchesRange = true;
+                    }
+                });
+                if (!matchesRange) show = false;
+            }
+
+            // Max price slider filter
+            if (product.price > maxPrice) {
+                show = false;
+            }
+
+            // In stock filter (for demo, we'll show all as in stock)
+            // In a real app, you'd check product.inStock property
+
+            product.visible = show;
+            product.element.style.display = show ? 'block' : 'none';
+
+            if (show) visibleCount++;
+        });
+
+        // Apply sorting
+        const visibleProducts = productsArray.filter(p => p.visible);
+
+        if (sortBy === 'price-low') {
+            visibleProducts.sort((a, b) => a.price - b.price);
+        } else if (sortBy === 'price-high') {
+            visibleProducts.sort((a, b) => b.price - a.price);
+        } else if (sortBy === 'newest') {
+            // For demo, reverse the order
+            visibleProducts.reverse();
+        }
+
+        // Reorder DOM elements
+        const container = document.querySelector('.product-grid-full');
+        visibleProducts.forEach(product => {
+            container.appendChild(product.element);
+        });
+
+        // Update product count
+        document.getElementById('productCount').textContent = visibleCount;
+    }
+
+    // Clear All Filters
+    function clearFilters() {
+        // Uncheck all checkboxes
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            cb.checked = false;
+        });
+
+        // Reset price slider
+        const priceSlider = document.getElementById('priceSlider');
+        priceSlider.value = 500;
+        updatePriceValue(500);
+
+        // Reset stock toggle
+        const toggle = document.getElementById('stockToggle');
+        toggle.classList.remove('active');
+        inStockOnly = false;
+
+        // Reset sort dropdown
+        document.getElementById('sortDropdown').value = 'featured';
+
+        // Show all products
+        applyFilters();
+    }
+
+    // Add to Cart Function with Toast Notification
+    function addToCart(productName, productId) {
+        // Create toast notification
+        const toast = document.createElement('div');
+        toast.className = 'toast-notification';
+        toast.innerHTML = `
+            <i class="fa-solid fa-circle-check"></i>
+            <span>Added to Cart! 🛒</span>
+        `;
+
+        document.body.appendChild(toast);
+
+        // Trigger animation
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 10);
+
+        // Remove toast after 3 seconds
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                document.body.removeChild(toast);
+            }, 400);
+        }, 3000);
+
+        // Store in localStorage (optional - for cart persistence)
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        const existingItem = cart.find(item => item.id === productId);
+
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            cart.push({
+                id: productId,
+                name: productName,
+                quantity: 1
+            });
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    // Smooth horizontal scroll for category slider
+    const categorySlider = document.querySelector('.category-slider');
+
+    if (categorySlider) {
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        categorySlider.addEventListener('mousedown', (e) => {
+            isDown = true;
+            categorySlider.style.cursor = 'grabbing';
+            startX = e.pageX - categorySlider.offsetLeft;
+            scrollLeft = categorySlider.scrollLeft;
+        });
+
+        categorySlider.addEventListener('mouseleave', () => {
+            isDown = false;
+            categorySlider.style.cursor = 'grab';
+        });
+
+        categorySlider.addEventListener('mouseup', () => {
+            isDown = false;
+            categorySlider.style.cursor = 'grab';
+        });
+
+        categorySlider.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - categorySlider.offsetLeft;
+            const walk = (x - startX) * 2;
+            categorySlider.scrollLeft = scrollLeft - walk;
+        });
+    }
+</script>
+{% endblock %}

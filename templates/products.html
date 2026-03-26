@@ -1,0 +1,807 @@
+{% extends "base.html" %}
+
+{% block title %}Products - Local Marketplace{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Premium Chronos-Inspired Design */
+    body {
+        background: #FFFFFF;
+    }
+
+    /* Hero Section */
+    .hero-banner {
+        position: relative;
+        width: 100%;
+        height: 600px;
+        background: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920') center/cover;
+        border-radius: 0;
+        overflow: hidden;
+        margin-bottom: 4rem;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.4));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .hero-content {
+        text-align: center;
+        color: white;
+        z-index: 10;
+    }
+
+    .hero-subtitle {
+        font-size: 0.875rem;
+        font-weight: 300;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+        opacity: 0.9;
+    }
+
+    .hero-title {
+        font-size: 4.5rem;
+        font-weight: 700;
+        line-height: 1.1;
+        margin-bottom: 2rem;
+    }
+
+    .hero-btn {
+        display: inline-block;
+        padding: 1rem 3rem;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50px;
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .hero-btn:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Infinite Sliding Categories */
+    .infinite-slider-container {
+        width: 100%;
+        overflow: hidden;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), transparent);
+        padding: 3rem 0;
+        margin-bottom: 4rem;
+        position: relative;
+    }
+
+    .infinite-slider-track {
+        display: flex;
+        gap: 1.5rem;
+        animation: scroll 40s linear infinite;
+        width: fit-content;
+    }
+
+    .infinite-slider-track:hover {
+        animation-play-state: paused;
+    }
+
+    @keyframes scroll {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-50%);
+        }
+    }
+
+    .infinite-category-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 2rem;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #111827;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .infinite-category-pill:hover {
+        background: #8CC63F;
+        border-color: #8CC63F;
+        color: white;
+        box-shadow: 0 0 20px rgba(140, 198, 63, 0.6);
+        transform: scale(1.05);
+    }
+
+    .category-icon-infinite {
+        font-size: 1.25rem;
+    }
+
+    /* Editorial Category Rows */
+    .category-editorial-row {
+        display: flex;
+        align-items: center;
+        gap: 3rem;
+        margin-bottom: 6rem;
+    }
+
+    .category-editorial-row:nth-child(even) {
+        flex-direction: row-reverse;
+    }
+
+    .category-editorial-image {
+        flex: 0 0 55%;
+        position: relative;
+        overflow: hidden;
+        border-radius: 1.5rem;
+        height: 350px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .category-editorial-image:hover {
+        transform: scale(1.02);
+    }
+
+    .category-editorial-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .category-editorial-content {
+        flex: 0 0 45%;
+    }
+
+    .category-editorial-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+
+    .category-editorial-name {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+
+    .category-editorial-description {
+        font-size: 1rem;
+        color: #6B7280;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+
+    .shop-collection-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.875rem 2rem;
+        background: #8CC63F;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-size: 0.938rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .shop-collection-btn:hover {
+        background: #7AB52F;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(140, 198, 63, 0.3);
+    }
+
+    /* Bento Grid - Featured Promo */
+    .bento-promo {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        margin-bottom: 4rem;
+    }
+
+    .promo-card {
+        position: relative;
+        height: 400px;
+        border-radius: 2rem;
+        overflow: hidden;
+        background: #F9FAFB;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .promo-card:hover {
+        transform: translateY(-8px);
+    }
+
+    .promo-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .promo-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 3rem;
+    }
+
+    .promo-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 1rem;
+    }
+
+    .promo-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: gap 0.3s ease;
+    }
+
+    .promo-link:hover {
+        gap: 1rem;
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+        padding: 3rem 0;
+        margin-bottom: 4rem;
+        border-top: 1px solid #E5E7EB;
+        border-bottom: 1px solid #E5E7EB;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-icon {
+        font-size: 2rem;
+        color: #8CC63F;
+        margin-bottom: 1rem;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        color: #6B7280;
+    }
+
+    /* Product Sections - Adjusted spacing after slider removal */
+    #products {
+        margin-top: 3rem;
+    }
+
+    /* Product Section Header */
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #111827;
+    }
+
+    .view-all-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #111827;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: gap 0.3s ease;
+    }
+
+    .view-all-link:hover {
+        gap: 1rem;
+        color: #8CC63F;
+    }
+
+    /* Product Grid - 4 in a Row */
+    .product-grid-4 {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+        margin-bottom: 5rem;
+    }
+
+    /* Product Card */
+    .product-card {
+        display: flex;
+        flex-direction: column;
+        background: #FFFFFF;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .product-card:hover {
+        transform: translateY(-8px);
+    }
+
+    /* Product Image */
+    .product-image-wrapper {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        background: #F9FAFB;
+        border-radius: 20px;
+        overflow: hidden;
+        margin-bottom: 1rem;
+    }
+
+    .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+
+    .product-card:hover .product-image {
+        transform: scale(1.05);
+    }
+
+    /* Quick to Cart Button */
+    .quick-cart-btn {
+        position: absolute;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        background: #8CC63F;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        opacity: 0;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(140, 198, 63, 0.3);
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .product-card:hover .quick-cart-btn {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    .quick-cart-btn:hover {
+        background: #7AB52F;
+        box-shadow: 0 6px 16px rgba(140, 198, 63, 0.4);
+    }
+
+    /* Toast Notification */
+    .toast-notification {
+        position: fixed;
+        top: 100px;
+        right: 30px;
+        background: #8CC63F;
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 50px;
+        font-size: 0.938rem;
+        font-weight: 600;
+        box-shadow: 0 8px 24px rgba(140, 198, 63, 0.4);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        opacity: 0;
+        transform: translateX(400px);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .toast-notification.show {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .toast-notification i {
+        font-size: 1.25rem;
+    }
+
+    /* Product Details */
+    .product-details {
+        text-align: left;
+    }
+
+    .product-name {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 0.5rem;
+        line-height: 1.4;
+    }
+
+    .store-name {
+        font-size: 0.75rem;
+        color: #9CA3AF;
+        margin-bottom: 0.5rem;
+    }
+
+    .product-price {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #111827;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .hero-title {
+            font-size: 3rem;
+        }
+
+        .bento-promo {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-bar {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .product-grid-4 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .infinite-category-pill {
+            padding: 0.875rem 1.5rem;
+            font-size: 0.8rem;
+        }
+
+        .category-editorial-row,
+        .category-editorial-row:nth-child(even) {
+            flex-direction: column;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .category-editorial-image,
+        .category-editorial-content {
+            flex: 0 0 100%;
+        }
+
+        .category-editorial-image {
+            height: 300px;
+        }
+
+        .category-editorial-name {
+            font-size: 1.75rem;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .hero-banner {
+            height: 400px;
+        }
+
+        .hero-title {
+            font-size: 2rem;
+        }
+
+        .stats-bar {
+            grid-template-columns: 1fr;
+        }
+
+        .product-grid-4 {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .infinite-slider-container {
+            padding: 2rem 0;
+        }
+
+        .infinite-slider-track {
+            gap: 1rem;
+        }
+
+        .infinite-category-pill {
+            padding: 0.75rem 1.25rem;
+            font-size: 0.75rem;
+        }
+
+        .category-icon-infinite {
+            font-size: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero Banner Section -->
+<div class="hero-banner">
+    <div class="hero-overlay">
+        <div class="hero-content">
+            <p class="hero-subtitle">New Collection 2026</p>
+            <h1 class="hero-title">Discover Premium<br>Quality Products</h1>
+            <a href="#products" class="hero-btn">Shop Now</a>
+        </div>
+    </div>
+</div>
+
+<!-- Infinite Sliding Categories -->
+<div class="infinite-slider-container">
+    <div class="infinite-slider-track">
+        <!-- First Set of Categories -->
+        <a href="/category/groceries" class="infinite-category-pill">
+            <span class="category-icon-infinite">🛒</span>
+            <span>Groceries</span>
+        </a>
+        <a href="/category/electronics" class="infinite-category-pill">
+            <span class="category-icon-infinite">📱</span>
+            <span>Electronics</span>
+        </a>
+        <a href="/category/health-beauty" class="infinite-category-pill">
+            <span class="category-icon-infinite">💄</span>
+            <span>Health & Beauty</span>
+        </a>
+        <a href="/category/home-lifestyle" class="infinite-category-pill">
+            <span class="category-icon-infinite">🏠</span>
+            <span>Home & Life Style</span>
+        </a>
+        <a href="/category/stationery-craft" class="infinite-category-pill">
+            <span class="category-icon-infinite">✏️</span>
+            <span>Stationery & Craft</span>
+        </a>
+        <a href="/category/kids" class="infinite-category-pill">
+            <span class="category-icon-infinite">🧸</span>
+            <span>Kids</span>
+        </a>
+        <a href="/category/mens-care" class="infinite-category-pill">
+            <span class="category-icon-infinite">🧴</span>
+            <span>Men's Care</span>
+        </a>
+        <a href="/category/mens-fashion" class="infinite-category-pill">
+            <span class="category-icon-infinite">👔</span>
+            <span>Men's Fashion</span>
+        </a>
+        <a href="/category/mother-baby" class="infinite-category-pill">
+            <span class="category-icon-infinite">👶</span>
+            <span>Mother & Baby</span>
+        </a>
+        <a href="/category/sports-outdoor" class="infinite-category-pill">
+            <span class="category-icon-infinite">⚽</span>
+            <span>Sports & Outdoor</span>
+        </a>
+
+        <!-- Duplicate Set for Seamless Loop -->
+        <a href="/category/groceries" class="infinite-category-pill">
+            <span class="category-icon-infinite">🛒</span>
+            <span>Groceries</span>
+        </a>
+        <a href="/category/electronics" class="infinite-category-pill">
+            <span class="category-icon-infinite">📱</span>
+            <span>Electronics</span>
+        </a>
+        <a href="/category/health-beauty" class="infinite-category-pill">
+            <span class="category-icon-infinite">💄</span>
+            <span>Health & Beauty</span>
+        </a>
+        <a href="/category/home-lifestyle" class="infinite-category-pill">
+            <span class="category-icon-infinite">🏠</span>
+            <span>Home & Life Style</span>
+        </a>
+        <a href="/category/stationery-craft" class="infinite-category-pill">
+            <span class="category-icon-infinite">✏️</span>
+            <span>Stationery & Craft</span>
+        </a>
+        <a href="/category/kids" class="infinite-category-pill">
+            <span class="category-icon-infinite">🧸</span>
+            <span>Kids</span>
+        </a>
+        <a href="/category/mens-care" class="infinite-category-pill">
+            <span class="category-icon-infinite">🧴</span>
+            <span>Men's Care</span>
+        </a>
+        <a href="/category/mens-fashion" class="infinite-category-pill">
+            <span class="category-icon-infinite">👔</span>
+            <span>Men's Fashion</span>
+        </a>
+        <a href="/category/mother-baby" class="infinite-category-pill">
+            <span class="category-icon-infinite">👶</span>
+            <span>Mother & Baby</span>
+        </a>
+        <a href="/category/sports-outdoor" class="infinite-category-pill">
+            <span class="category-icon-infinite">⚽</span>
+            <span>Sports & Outdoor</span>
+        </a>
+    </div>
+</div>
+
+<!-- Main Container -->
+<div style="background: #FFFFFF; min-height: 100vh; padding: 0 0 3rem 0;">
+    <div class="container mx-auto px-12">
+
+        <!-- Bento Grid - Featured Promo Cards -->
+        <div class="bento-promo">
+            <!-- Premium Collection Card -->
+            <div class="promo-card">
+                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800" alt="Premium Collection">
+                <div class="promo-overlay">
+                    <h2 class="promo-title">Premium<br>Collection</h2>
+                    <a href="/category/fashion" class="promo-link">
+                        Explore
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Spring Sale Card -->
+            <div class="promo-card">
+                <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800" alt="Spring Sale">
+                <div class="promo-overlay">
+                    <h2 class="promo-title">Spring Sale<br>Up to 50% Off</h2>
+                    <a href="/category/groceries" class="promo-link">
+                        Shop Now
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div class="stat-value">50K+</div>
+                <div class="stat-label">Happy Customers</div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <div class="stat-value">100+</div>
+                <div class="stat-label">Award Winning</div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <div class="stat-value">4.9</div>
+                <div class="stat-label">Average Rating</div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+                <div class="stat-value">98%</div>
+                <div class="stat-label">Satisfaction Rate</div>
+            </div>
+        </div>
+
+        <!-- Product Sections -->
+        <div id="products">
+            {% for item in categories_with_products %}
+            <!-- Editorial Category Row -->
+            <div class="category-editorial-row">
+                <!-- Category Image -->
+                <a href="/category/{{ item.category.slug }}" class="category-editorial-image">
+                    <img src="{{ item.category.profile_image }}" alt="{{ item.category.name }}">
+                </a>
+
+                <!-- Category Content -->
+                <div class="category-editorial-content">
+                    <span class="category-editorial-icon">{{ item.category.icon }}</span>
+                    <h2 class="category-editorial-name">{{ item.category.name }}</h2>
+                    <p class="category-editorial-description">{{ item.category.description }}</p>
+                    <a href="/category/{{ item.category.slug }}" class="shop-collection-btn">
+                        Shop Collection
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Smooth scroll to products section
+    document.querySelector('.hero-btn').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector('#products').scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
+
+    // Add to Cart Function with Toast Notification
+    function addToCart(productName, productId) {
+        // Create toast notification
+        const toast = document.createElement('div');
+        toast.className = 'toast-notification';
+        toast.innerHTML = `
+            <i class="fa-solid fa-circle-check"></i>
+            <span>Added to Cart! 🛒</span>
+        `;
+
+        document.body.appendChild(toast);
+
+        // Trigger animation
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 10);
+
+        // Remove toast after 3 seconds
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                document.body.removeChild(toast);
+            }, 400);
+        }, 3000);
+
+        // Store in localStorage (optional - for cart persistence)
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        const existingItem = cart.find(item => item.id === productId);
+
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            cart.push({
+                id: productId,
+                name: productName,
+                quantity: 1
+            });
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }
+</script>
+{% endblock %}

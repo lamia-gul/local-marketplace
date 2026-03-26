@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Marketplace - Enter Location</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Blurred Background Preview -->
+    <div style="min-height: 100vh; background: linear-gradient(135deg, #f0f4f8 0%, #e9ecef 100%); padding: 3rem;">
+        <div style="max-width: 1280px; margin: 0 auto;">
+            <!-- Simulated content for blur effect -->
+            <div style="background: white; border-radius: 2rem; padding: 2rem; margin-bottom: 2rem; opacity: 0.6;">
+                <div style="height: 3rem; background: #e5e7eb; border-radius: 0.5rem; width: 12rem; margin-bottom: 1.5rem;"></div>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
+                    <div style="height: 8rem; background: #f3f4f6; border-radius: 1rem;"></div>
+                    <div style="height: 8rem; background: #f3f4f6; border-radius: 1rem;"></div>
+                    <div style="height: 8rem; background: #f3f4f6; border-radius: 1rem;"></div>
+                    <div style="height: 8rem; background: #f3f4f6; border-radius: 1rem;"></div>
+                </div>
+            </div>
+            <div style="background: white; border-radius: 2rem; padding: 2rem; opacity: 0.6;">
+                <div style="height: 16rem; background: #f3f4f6; border-radius: 1rem;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Glassmorphism Search Gate Overlay -->
+    <div class="search-gate-overlay">
+        <div class="search-gate-card">
+            <!-- Logo -->
+            <img src="{{ url_for('static', filename='images/loci-logo.png') }}"
+                 alt="Local Marketplace"
+                 class="search-gate-logo">
+
+            <!-- Title & Subtitle -->
+            <h1 class="search-gate-title">Welcome to Local Marketplace</h1>
+            <p class="search-gate-subtitle">Enter Your Address to search nearby stores</p>
+
+            <!-- Search Form -->
+            <form action="/set-location" method="POST">
+                <div class="search-input-wrapper">
+                    <i class="fa-solid fa-location-dot search-input-icon"></i>
+                    <input
+                        type="text"
+                        name="address"
+                        class="search-input"
+                        placeholder="Enter your delivery address"
+                        required
+                        autofocus
+                    >
+                </div>
+
+                <button type="submit" class="hero-cta" style="width: 100%; justify-content: center;">
+                    Continue Shopping
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <!-- Popular Searches -->
+            <div class="popular-searches">
+                <p class="popular-searches-label">
+                    <i class="fa-solid fa-fire" style="color: #e41e26; margin-right: 0.5rem;"></i>
+                    Popular Locations
+                </p>
+                <div class="popular-tags">
+                    <button type="button" class="popular-tag" onclick="fillAddress('Karachi, Pakistan')">
+                        📍 Karachi
+                    </button>
+                    <button type="button" class="popular-tag" onclick="fillAddress('Lahore, Pakistan')">
+                        📍 Lahore
+                    </button>
+                    <button type="button" class="popular-tag" onclick="fillAddress('Islamabad, Pakistan')">
+                        📍 Islamabad
+                    </button>
+                    <button type="button" class="popular-tag" onclick="fillAddress('Rawalpindi, Pakistan')">
+                        📍 Rawalpindi
+                    </button>
+                </div>
+            </div>
+
+            <!-- Security Note -->
+            <p style="text-align: center; color: var(--color-text-secondary); font-size: 0.875rem; margin-top: 1.5rem;">
+                <i class="fa-solid fa-shield-halved" style="color: var(--color-primary-green); margin-right: 0.5rem;"></i>
+                Your location helps us show nearby stores and products
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Fill address input with popular location
+        function fillAddress(location) {
+            const input = document.querySelector('.search-input');
+            input.value = location;
+            input.focus();
+        }
+
+        // Add enter key support for popular tags
+        document.querySelectorAll('.popular-tag').forEach(tag => {
+            tag.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    tag.click();
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

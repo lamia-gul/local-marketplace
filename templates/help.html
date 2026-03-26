@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Help Center - Local Marketplace{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section style="background: linear-gradient(135deg, #10B981 0%, #34D399 100%); padding: 80px 0;">
+    <div class="container mx-auto px-8 text-center">
+        <h1 style="font-size: 3rem; font-weight: 700; color: white; margin-bottom: 1rem;">
+            Help Center
+        </h1>
+        <p style="font-size: 1.25rem; color: rgba(255, 255, 255, 0.9);">
+            Find answers to common questions
+        </p>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section style="background: #F9FAFB; padding: 100px 0;">
+    <div class="container mx-auto px-8">
+        <div style="max-width: 900px; margin: 0 auto;">
+            <h2 style="font-size: 2rem; font-weight: 600; color: #111827; margin-bottom: 3rem; text-align: center;">
+                Frequently Asked Questions
+            </h2>
+
+            <!-- FAQ Item 1 -->
+            <div style="background: white; border-radius: 16px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);">
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: #111827; margin-bottom: 1rem;">
+                    How do I create a store on Local Marketplace?
+                </h3>
+                <p style="font-size: 1rem; color: #6B7280; line-height: 1.6;">
+                    Click on "Create Store" in the navigation menu, fill out the registration form with your business details, and submit. Our team will review your application within 24 hours.
+                </p>
+            </div>
+
+            <!-- FAQ Item 2 -->
+            <div style="background: white; border-radius: 16px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);">
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: #111827; margin-bottom: 1rem;">
+                    What are the fees for selling on Local Marketplace?
+                </h3>
+                <p style="font-size: 1rem; color: #6B7280; line-height: 1.6;">
+                    Local Marketplace charges a small commission on each sale. There are no upfront fees or monthly subscriptions. You only pay when you make a sale.
+                </p>
+            </div>
+
+            <!-- FAQ Item 3 -->
+            <div style="background: white; border-radius: 16px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);">
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: #111827; margin-bottom: 1rem;">
+                    How do I track my orders?
+                </h3>
+                <p style="font-size: 1rem; color: #6B7280; line-height: 1.6;">
+                    Log in to your account and go to "My Orders" to see all your order history and tracking information. You'll also receive email updates for each order.
+                </p>
+            </div>
+
+            <!-- FAQ Item 4 -->
+            <div style="background: white; border-radius: 16px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);">
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: #111827; margin-bottom: 1rem;">
+                    What payment methods do you accept?
+                </h3>
+                <p style="font-size: 1rem; color: #6B7280; line-height: 1.6;">
+                    We accept all major credit/debit cards, mobile wallets, and cash on delivery for eligible orders.
+                </p>
+            </div>
+
+            <!-- FAQ Item 5 -->
+            <div style="background: white; border-radius: 16px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);">
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: #111827; margin-bottom: 1rem;">
+                    How long does delivery take?
+                </h3>
+                <p style="font-size: 1rem; color: #6B7280; line-height: 1.6;">
+                    Delivery times vary by location and store. Most local orders are delivered within 24-48 hours. You'll see estimated delivery times at checkout.
+                </p>
+            </div>
+
+            <!-- Contact CTA -->
+            <div style="text-align: center; margin-top: 4rem;">
+                <p style="font-size: 1.125rem; color: #6B7280; margin-bottom: 1.5rem;">
+                    Can't find what you're looking for?
+                </p>
+                <a href="{{ url_for('contact') }}" style="display: inline-block; background: #8CC63F; color: white; padding: 1rem 2.5rem; border-radius: 50px; font-weight: 600; text-decoration: none; transition: all 0.3s ease;">
+                    Contact Support
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

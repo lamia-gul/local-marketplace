@@ -1,0 +1,468 @@
+{% extends "base.html" %}
+
+{% block title %}Blog - Local Marketplace{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Blog Card Hover Effects */
+    .blog-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .blog-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Category Filter Buttons */
+    .category-btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        border: 2px solid #E5E7EB;
+        background: white;
+        color: #6B7280;
+        font-weight: 600;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .category-btn:hover {
+        border-color: #8CC63F;
+        color: #8CC63F;
+        background: rgba(140, 198, 63, 0.05);
+    }
+
+    .category-btn.active {
+        background: #8CC63F;
+        color: white;
+        border-color: #8CC63F;
+    }
+
+    /* Search Bar */
+    .search-input {
+        width: 100%;
+        padding: 1rem 1.5rem 1rem 3rem;
+        border-radius: 50px;
+        border: 2px solid #E5E7EB;
+        font-size: 1rem;
+        outline: none;
+        transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+        border-color: #8CC63F;
+        box-shadow: 0 0 0 3px rgba(140, 198, 63, 0.1);
+    }
+
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(4px);
+        z-index: 9999;
+        padding: 2rem;
+        overflow-y: auto;
+    }
+
+    .modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-content {
+        background: white;
+        border-radius: 24px;
+        max-width: 800px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        animation: modalSlideIn 0.3s ease;
+    }
+
+    @keyframes modalSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .blog-card:hover {
+            transform: translateY(-4px);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section style="background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%); padding: 80px 0;">
+    <div class="container mx-auto px-4 md:px-8 text-center">
+        <h1 style="font-size: 2.5rem; md:font-size: 3rem; font-weight: 700; color: white; margin-bottom: 1rem;">
+            Local Marketplace Blog
+        </h1>
+        <p style="font-size: 1rem; md:font-size: 1.25rem; color: rgba(255, 255, 255, 0.9);">
+            Insights, stories, and strategies for modern commerce
+        </p>
+    </div>
+</section>
+
+<!-- Search & Filter Section -->
+<section style="background: white; padding: 3rem 0; border-bottom: 1px solid #E5E7EB;">
+    <div class="container mx-auto px-4 md:px-8">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <!-- Search Bar -->
+            <div style="position: relative; margin-bottom: 2rem;">
+                <i class="fa-solid fa-search" style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: #9CA3AF; font-size: 1.125rem;"></i>
+                <input type="text"
+                       id="searchInput"
+                       class="search-input"
+                       placeholder="Search articles..."
+                       onkeyup="filterBlogs()">
+            </div>
+
+            <!-- Category Filters -->
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;">
+                <button class="category-btn active" onclick="filterCategory('all')" data-category="all">All Articles</button>
+                <button class="category-btn" onclick="filterCategory('business')" data-category="business">Business</button>
+                <button class="category-btn" onclick="filterCategory('tech')" data-category="tech">Tech</button>
+                <button class="category-btn" onclick="filterCategory('success')" data-category="success">Success Stories</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Blog Posts Grid -->
+<section style="background: #F9FAFB; padding: 80px 0;">
+    <div class="container mx-auto px-4 md:px-8">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div id="blogGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- Blog Post 1: The Future of Neighborhood Commerce -->
+                <article class="blog-card" data-category="business" data-title="The Future of Neighborhood Commerce" onclick="openModal('modal1')">
+                    <div style="height: 240px; background: linear-gradient(135deg, #A855F7 0%, #EC4899 100%); position: relative; overflow: hidden;">
+                        <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+                            <i class="fa-solid fa-store" style="font-size: 4rem; color: rgba(255, 255, 255, 0.3);"></i>
+                        </div>
+                    </div>
+                    <div style="padding: 2rem;">
+                        <span style="color: #8CC63F; font-size: 0.813rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Business</span>
+                        <h3 style="font-size: 1.5rem; font-weight: 600; color: #111827; margin: 1rem 0; line-height: 1.3;">
+                            The Future of Neighborhood Commerce
+                        </h3>
+                        <p style="font-size: 0.938rem; color: #6B7280; line-height: 1.6; margin-bottom: 1.5rem;">
+                            Exploring how Local Marketplace is revolutionizing small businesses through digital transformation and community-focused commerce.
+                        </p>
+                        <button style="background: #6366F1; color: white; padding: 0.75rem 1.5rem; border-radius: 50px; border: none; font-weight: 600; font-size: 0.875rem; cursor: pointer; transition: all 0.3s ease;"
+                                onmouseover="this.style.background='#4F46E5'"
+                                onmouseout="this.style.background='#6366F1'">
+                            Read More →
+                        </button>
+                    </div>
+                </article>
+
+                <!-- Blog Post 2: Scaling Your Home Business -->
+                <article class="blog-card" data-category="success" data-title="Scaling Your Home Business" onclick="openModal('modal2')">
+                    <div style="height: 240px; background: linear-gradient(135deg, #10B981 0%, #34D399 100%); position: relative; overflow: hidden;">
+                        <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+                            <i class="fa-solid fa-chart-line" style="font-size: 4rem; color: rgba(255, 255, 255, 0.3);"></i>
+                        </div>
+                    </div>
+                    <div style="padding: 2rem;">
+                        <span style="color: #8CC63F; font-size: 0.813rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Success Stories</span>
+                        <h3 style="font-size: 1.5rem; font-weight: 600; color: #111827; margin: 1rem 0; line-height: 1.3;">
+                            Scaling Your Home Business
+                        </h3>
+                        <p style="font-size: 0.938rem; color: #6B7280; line-height: 1.6; margin-bottom: 1.5rem;">
+                            A spotlight on Shabs Cuisine and how they leveraged our platform to grow from a home kitchen to a thriving business.
+                        </p>
+                        <button style="background: #6366F1; color: white; padding: 0.75rem 1.5rem; border-radius: 50px; border: none; font-weight: 600; font-size: 0.875rem; cursor: pointer; transition: all 0.3s ease;"
+                                onmouseover="this.style.background='#4F46E5'"
+                                onmouseout="this.style.background='#6366F1'">
+                            Read More →
+                        </button>
+                    </div>
+                </article>
+
+                <!-- Blog Post 3: UI/UX Secrets for Marketplaces -->
+                <article class="blog-card" data-category="tech" data-title="UI/UX Secrets for Marketplaces" onclick="openModal('modal3')">
+                    <div style="height: 240px; background: linear-gradient(135deg, #F59E0B 0%, #EF4444 100%); position: relative; overflow: hidden;">
+                        <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+                            <i class="fa-solid fa-palette" style="font-size: 4rem; color: rgba(255, 255, 255, 0.3);"></i>
+                        </div>
+                    </div>
+                    <div style="padding: 2rem;">
+                        <span style="color: #8CC63F; font-size: 0.813rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Tech</span>
+                        <h3 style="font-size: 1.5rem; font-weight: 600; color: #111827; margin: 1rem 0; line-height: 1.3;">
+                            UI/UX Secrets for Marketplaces
+                        </h3>
+                        <p style="font-size: 0.938rem; color: #6B7280; line-height: 1.6; margin-bottom: 1.5rem;">
+                            Deep insights into our design philosophy and why we chose a luxury, high-contrast aesthetic for Local Marketplace.
+                        </p>
+                        <button style="background: #6366F1; color: white; padding: 0.75rem 1.5rem; border-radius: 50px; border: none; font-weight: 600; font-size: 0.875rem; cursor: pointer; transition: all 0.3s ease;"
+                                onmouseover="this.style.background='#4F46E5'"
+                                onmouseout="this.style.background='#6366F1'">
+                            Read More →
+                        </button>
+                    </div>
+                </article>
+
+            </div>
+
+            <!-- No Results Message -->
+            <div id="noResults" style="display: none; text-align: center; padding: 4rem 2rem;">
+                <i class="fa-solid fa-search" style="font-size: 3rem; color: #D1D5DB; margin-bottom: 1rem;"></i>
+                <h3 style="font-size: 1.5rem; font-weight: 600; color: #6B7280; margin-bottom: 0.5rem;">No articles found</h3>
+                <p style="color: #9CA3AF;">Try adjusting your search or filter criteria</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal 1: The Future of Neighborhood Commerce -->
+<div id="modal1" class="modal" onclick="closeModal('modal1')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div style="position: sticky; top: 0; background: white; padding: 2rem; border-bottom: 1px solid #E5E7EB; z-index: 10;">
+            <button onclick="closeModal('modal1')" style="position: absolute; top: 1.5rem; right: 1.5rem; background: #F3F4F6; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;"
+                    onmouseover="this.style.background='#E5E7EB'"
+                    onmouseout="this.style.background='#F3F4F6'">
+                <i class="fa-solid fa-times" style="font-size: 1.25rem; color: #6B7280;"></i>
+            </button>
+            <span style="color: #8CC63F; font-size: 0.813rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Business</span>
+            <h2 style="font-size: 2rem; font-weight: 700; color: #111827; margin-top: 0.5rem; line-height: 1.3;">
+                The Future of Neighborhood Commerce
+            </h2>
+        </div>
+        <div style="padding: 2rem;">
+            <div style="height: 300px; background: linear-gradient(135deg, #A855F7 0%, #EC4899 100%); border-radius: 16px; margin-bottom: 2rem;"></div>
+
+            <p style="font-size: 1.125rem; color: #6B7280; line-height: 1.8; margin-bottom: 1.5rem;">
+                The landscape of local commerce is undergoing a dramatic transformation. Small businesses that once relied solely on foot traffic are now discovering the power of digital platforms to reach customers beyond their immediate vicinity.
+            </p>
+
+            <h3 style="font-size: 1.5rem; font-weight: 600; color: #111827; margin: 2rem 0 1rem;">Digital Transformation for Local Businesses</h3>
+            <p style="font-size: 1rem; color: #6B7280; line-height: 1.8; margin-bottom: 1.5rem;">
+                Local Marketplace is at the forefront of this revolution, providing small businesses with enterprise-level tools to manage inventory, process orders, and connect with customers. Our platform bridges the gap between traditional neighborhood commerce and modern e-commerce capabilities.
+            </p>
+
+            <h3 style="font-size: 1.5rem; font-weight: 600; color: #111827; margin: 2rem 0 1rem;">Community-Focused Approach</h3>
+            <p style="font-size: 1rem; color: #6B7280; line-height: 1.8; margin-bottom: 1.5rem;">
+                Unlike massive marketplaces that prioritize volume over relationships, we emphasize the personal connections that make neighborhood businesses special. Every transaction on our platform strengthens the local economy and builds community bonds.
+            </p>
+
+            <div style="background: #F9FAFB; padding: 2rem; border-radius: 16px; border-left: 4px solid #8CC63F; margin: 2rem 0;">
+                <p style="font-size: 1rem; color: #374151; line-height: 1.8; font-style: italic;">
+                    "The future of commerce isn't about replacing local businesses—it's about empowering them with the tools they need to thrive in a digital world."
+                </p>
+            </div>
+
+            <p style="font-size: 1rem; color: #6B7280; line-height: 1.8;">
+                As we look ahead, the integration of technology and community will only deepen. Local Marketplace is committed to being the platform that makes this future accessible to every neighborhood entrepreneur.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 2: Scaling Your Home Business -->
+<div id="modal2" class="modal" onclick="closeModal('modal2')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div style="position: sticky; top: 0; background: white; padding: 2rem; border-bottom: 1px solid #E5E7EB; z-index: 10;">
+            <button onclick="closeModal('modal2')" style="position: absolute; top: 1.5rem; right: 1.5rem; background: #F3F4F6; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;"
+                    onmouseover="this.style.background='#E5E7EB'"
+                    onmouseout="this.style.background='#F3F4F6'">
+                <i class="fa-solid fa-times" style="font-size: 1.25rem; color: #6B7280;"></i>
+            </button>
+            <span style="color: #8CC63F; font-size: 0.813rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Success Stories</span>
+            <h2 style="font-size: 2rem; font-weight: 700; color: #111827; margin-top: 0.5rem; line-height: 1.3;">
+                Scaling Your Home Business: The Shabs Cuisine Story
+            </h2>
+        </div>
+        <div style="padding: 2rem;">
+            <div style="height: 300px; background: linear-gradient(135deg, #10B981 0%, #34D399 100%); border-radius: 16px; margin-bottom: 2rem;"></div>
+
+            <p style="font-size: 1.125rem; color: #6B7280; line-height: 1.8; margin-bottom: 1.5rem;">
+                When Shabs Cuisine first joined Local Marketplace, they were a small home-based kitchen serving a handful of regular customers. Today, they're one of our most successful sellers, processing hundreds of orders monthly.
+            </p>
+
+            <h3 style="font-size: 1.5rem; font-weight: 600; color: #111827; margin: 2rem 0 1rem;">The Beginning</h3>
+            <p style="font-size: 1rem; color: #6B7280; line-height: 1.8; margin-bottom: 1.5rem;">
+                Shabs Cuisine started with a simple menu: frozen rolls, samosas, and fresh sandwiches. Their quality was exceptional, but their reach was limited to word-of-mouth referrals and a small social media following.
+            </p>
+
+            <h3 style="font-size: 1.5rem; font-weight: 600; color: #111827; margin: 2rem 0 1rem;">The Transformation</h3>
+            <p style="font-size: 1rem; color: #6B7280; line-height: 1.8; margin-bottom: 1.5rem;">
+                After joining Local Marketplace, Shabs Cuisine gained access to:
+            </p>
+            <ul style="list-style: disc; margin-left: 2rem; color: #6B7280; line-height: 2;">
+                <li>Professional storefront with high-quality product photography</li>
+                <li>Integrated payment processing and order management</li>
+                <li>Analytics to understand customer preferences</li>
+                <li>Marketing tools to reach new customers</li>
+            </ul>
+
+            <div style="background: #F9FAFB; padding: 2rem; border-radius: 16px; border-left: 4px solid #8CC63F; margin: 2rem 0;">
+                <p style="font-size: 1rem; color: #374151; line-height: 1.8; font-weight: 600;">
+                    300% Growth in 6 Months
+                </p>
+                <p style="font-size: 0.938rem; color: #6B7280; line-height: 1.6; margin-top: 0.5rem;">
+                    From 50 orders per month to over 150, Shabs Cuisine tripled their revenue while maintaining the quality that made them special.
+                </p>
+            </div>
+
+            <h3 style="font-size: 1.5rem; font-weight: 600; color: #111827; margin: 2rem 0 1rem;">Key Takeaways</h3>
+            <p style="font-size: 1rem; color: #6B7280; line-height: 1.8;">
+                The success of Shabs Cuisine demonstrates that with the right platform and tools, home-based businesses can scale without losing their personal touch. Local Marketplace provides the infrastructure while you focus on what you do best—creating amazing products.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 3: UI/UX Secrets -->
+<div id="modal3" class="modal" onclick="closeModal('modal3')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div style="position: sticky; top: 0; background: white; padding: 2rem; border-bottom: 1px solid #E5E7EB; z-index: 10;">
+            <button onclick="closeModal('modal3')" style="position: absolute; top: 1.5rem; right: 1.5rem; background: #F3F4F6; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;"
+                    onmouseover="this.style.background='#E5E7EB'"
+                    onmouseout="this.style.background='#F3F4F6'">
+                <i class="fa-solid fa-times" style="font-size: 1.25rem; color: #6B7280;"></i>
+            </button>
+            <span style="color: #8CC63F; font-size: 0.813rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Tech</span>
+            <h2 style="font-size: 2rem; font-weight: 700; color: #111827; margin-top: 0.5rem; line-height: 1.3;">
+                UI/UX Secrets for Marketplaces
+            </h2>
+        </div>
+        <div style="padding: 2rem;">
+            <div style="height: 300px; background: linear-gradient(135deg, #F59E0B 0%, #EF4444 100%); border-radius: 16px; margin-bottom: 2rem;"></div>
+
+            <p style="font-size: 1.125rem; color: #6B7280; line-height: 1.8; margin-bottom: 1.5rem;">
+                Great marketplace design isn't just about aesthetics—it's about creating trust, reducing friction, and making every interaction feel premium. Here's why we chose our distinctive design approach.
+            </p>
+
+            <h3 style="font-size: 1.5rem; font-weight: 600; color: #111827; margin: 2rem 0 1rem;">The Luxury Aesthetic</h3>
+            <p style="font-size: 1rem; color: #6B7280; line-height: 1.8; margin-bottom: 1.5rem;">
+                We deliberately chose a high-contrast, luxury design language to elevate the perception of local businesses. When sellers present their products on a premium platform, customers perceive higher value—and they're willing to pay for quality.
+            </p>
+
+            <h3 style="font-size: 1.5rem; font-weight: 600; color: #111827; margin: 2rem 0 1rem;">Design Principles</h3>
+            <ul style="list-style: none; margin-left: 0; color: #6B7280; line-height: 2;">
+                <li style="margin-bottom: 1rem;">
+                    <strong style="color: #111827;">✓ Whitespace is Premium:</strong> Generous spacing creates a sense of luxury and makes content easier to scan.
+                </li>
+                <li style="margin-bottom: 1rem;">
+                    <strong style="color: #111827;">✓ High Contrast:</strong> Bold colors and clear typography ensure accessibility and visual hierarchy.
+                </li>
+                <li style="margin-bottom: 1rem;">
+                    <strong style="color: #111827;">✓ Smooth Interactions:</strong> Every hover, click, and transition is carefully crafted for delight.
+                </li>
+                <li style="margin-bottom: 1rem;">
+                    <strong style="color: #111827;">✓ Mobile-First:</strong> Over 70% of our users shop on mobile, so responsive design isn't optional.
+                </li>
+            </ul>
+
+            <div style="background: #F9FAFB; padding: 2rem; border-radius: 16px; border-left: 4px solid #8CC63F; margin: 2rem 0;">
+                <p style="font-size: 1rem; color: #374151; line-height: 1.8; font-style: italic;">
+                    "Design is not just what it looks like and feels like. Design is how it works." - Steve Jobs
+                </p>
+            </div>
+
+            <h3 style="font-size: 1.5rem; font-weight: 600; color: #111827; margin: 2rem 0 1rem;">The Impact</h3>
+            <p style="font-size: 1rem; color: #6B7280; line-height: 1.8;">
+                Our design choices have resulted in a 40% higher conversion rate compared to industry standards. Users spend more time browsing, trust the platform more, and complete purchases with confidence. That's the power of thoughtful UI/UX design.
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Filter by category
+    function filterCategory(category) {
+        const cards = document.querySelectorAll('.blog-card');
+        const buttons = document.querySelectorAll('.category-btn');
+        const noResults = document.getElementById('noResults');
+        let visibleCount = 0;
+
+        // Update active button
+        buttons.forEach(btn => {
+            if (btn.dataset.category === category) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
+        // Filter cards
+        cards.forEach(card => {
+            if (category === 'all' || card.dataset.category === category) {
+                card.style.display = 'block';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Show/hide no results message
+        noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
+
+    // Search functionality
+    function filterBlogs() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const cards = document.querySelectorAll('.blog-card');
+        const noResults = document.getElementById('noResults');
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+            const title = card.dataset.title.toLowerCase();
+            const category = card.dataset.category.toLowerCase();
+
+            if (title.includes(searchTerm) || category.includes(searchTerm)) {
+                card.style.display = 'block';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Show/hide no results message
+        noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
+
+    // Modal functions
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.classList.remove('active');
+            });
+            document.body.style.overflow = 'auto';
+        }
+    });
+</script>
+
+{% endblock %}

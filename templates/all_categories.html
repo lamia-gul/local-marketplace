@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}All Categories - Local Marketplace{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: #FFFFFF;
+    }
+
+    /* Page Header */
+    .page-header {
+        padding: 4rem 0 3rem;
+        text-align: center;
+        background: #F9FAFB;
+    }
+
+    .page-title {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 1rem;
+    }
+
+    .page-subtitle {
+        font-size: 1.125rem;
+        color: #6B7280;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* Editorial Row Design */
+    .category-row {
+        display: flex;
+        align-items: center;
+        gap: 4rem;
+        padding: 4rem 0;
+        border-bottom: 1px solid #F3F4F6;
+    }
+
+    .category-row:last-child {
+        border-bottom: none;
+    }
+
+    /* Alternate layout for even rows */
+    .category-row:nth-child(even) {
+        flex-direction: row-reverse;
+    }
+
+    /* Left Side - Image (60%) */
+    .category-image-container {
+        flex: 0 0 60%;
+        position: relative;
+        overflow: hidden;
+        border-radius: 1.5rem;
+        height: 400px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .category-image-container:hover {
+        transform: scale(1.02);
+    }
+
+    .category-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Right Side - Content (40%) */
+    .category-content {
+        flex: 0 0 40%;
+        padding: 2rem;
+    }
+
+    .category-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .category-name {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+
+    .category-description {
+        font-size: 1.125rem;
+        color: #6B7280;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+    }
+
+    .shop-collection-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 2.5rem;
+        background: #8CC63F;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .shop-collection-btn:hover {
+        background: #7AB52F;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(140, 198, 63, 0.3);
+    }
+
+    /* Responsive */
+    @media (max-width: 968px) {
+        .category-row,
+        .category-row:nth-child(even) {
+            flex-direction: column;
+            gap: 2rem;
+            padding: 3rem 0;
+        }
+
+        .category-image-container,
+        .category-content {
+            flex: 0 0 100%;
+        }
+
+        .category-image-container {
+            height: 300px;
+        }
+
+        .page-title {
+            font-size: 2rem;
+        }
+
+        .category-name {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container mx-auto px-12">
+        <h1 class="page-title">All Categories</h1>
+        <p class="page-subtitle">Explore our curated collections of premium products</p>
+    </div>
+</div>
+
+
+<!-- Categories Editorial Rows -->
+<div style="background: #FFFFFF; padding: 2rem 0 4rem;">
+    <div class="container mx-auto px-12">
+        {% for category in categories %}
+        <div class="category-row">
+            <!-- Category Image (60%) -->
+            <a href="/category/{{ category.slug }}" class="category-image-container">
+                <img src="{{ category.profile_image }}" alt="{{ category.name }}" class="category-image">
+            </a>
+
+            <!-- Category Content (40%) -->
+            <div class="category-content">
+                <span class="category-icon">{{ category.icon }}</span>
+                <h2 class="category-name">{{ category.name }}</h2>
+                <p class="category-description">{{ category.description }}</p>
+                <a href="/category/{{ category.slug }}" class="shop-collection-btn">
+                    Shop Collection
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Local Marketplace{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section style="background: linear-gradient(135deg, #A855F7 0%, #EC4899 100%); padding: 80px 0;">
+    <div class="container mx-auto px-8 text-center">
+        <h1 style="font-size: 3rem; font-weight: 700; color: white; margin-bottom: 1rem;">
+            Join Local Marketplace
+        </h1>
+        <p style="font-size: 1.25rem; color: rgba(255, 255, 255, 0.9);">
+            Create your account and start shopping from local stores
+        </p>
+    </div>
+</section>
+
+<!-- Registration Form -->
+<section style="background: #F9FAFB; padding: 100px 0;">
+    <div class="container mx-auto px-8">
+        <div style="max-width: 600px; margin: 0 auto;">
+            <div style="background: white; border-radius: 20px; padding: 3rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);">
+                <form method="POST" action="{{ url_for('register') }}">
+                    <!-- Full Name -->
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">Full Name</label>
+                        <input type="text" name="fullname" required
+                               style="width: 100%; padding: 1rem; border: 1px solid #E5E7EB; border-radius: 12px; font-size: 1rem; outline: none; transition: all 0.3s ease;"
+                               placeholder="John Doe"
+                               onfocus="this.style.borderColor='#8CC63F'"
+                               onblur="this.style.borderColor='#E5E7EB'">
+                    </div>
+
+                    <!-- Username -->
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">Username</label>
+                        <input type="text" name="username" required
+                               style="width: 100%; padding: 1rem; border: 1px solid #E5E7EB; border-radius: 12px; font-size: 1rem; outline: none; transition: all 0.3s ease;"
+                               placeholder="johndoe"
+                               onfocus="this.style.borderColor='#8CC63F'"
+                               onblur="this.style.borderColor='#E5E7EB'">
+                    </div>
+
+                    <!-- Email -->
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">Email Address</label>
+                        <input type="email" name="email" required
+                               style="width: 100%; padding: 1rem; border: 1px solid #E5E7EB; border-radius: 12px; font-size: 1rem; outline: none; transition: all 0.3s ease;"
+                               placeholder="john@example.com"
+                               onfocus="this.style.borderColor='#8CC63F'"
+                               onblur="this.style.borderColor='#E5E7EB'">
+                    </div>
+
+                    <!-- Password -->
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">Password</label>
+                        <input type="password" name="password" required
+                               style="width: 100%; padding: 1rem; border: 1px solid #E5E7EB; border-radius: 12px; font-size: 1rem; outline: none; transition: all 0.3s ease;"
+                               placeholder="••••••••"
+                               onfocus="this.style.borderColor='#8CC63F'"
+                               onblur="this.style.borderColor='#E5E7EB'">
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">Confirm Password</label>
+                        <input type="password" name="confirm_password" required
+                               style="width: 100%; padding: 1rem; border: 1px solid #E5E7EB; border-radius: 12px; font-size: 1rem; outline: none; transition: all 0.3s ease;"
+                               placeholder="••••••••"
+                               onfocus="this.style.borderColor='#8CC63F'"
+                               onblur="this.style.borderColor='#E5E7EB'">
+                    </div>
+
+                    <!-- Terms and Conditions -->
+                    <div style="margin-bottom: 2rem; display: flex; align-items: start; gap: 0.75rem;">
+                        <input type="checkbox" name="terms" required
+                               style="margin-top: 0.25rem; width: 18px; height: 18px; accent-color: #8CC63F;">
+                        <label style="font-size: 0.938rem; color: #6B7280; line-height: 1.5;">
+                            I agree to the <a href="#" style="color: #6366F1; text-decoration: none;">Terms and Conditions</a> and <a href="#" style="color: #6366F1; text-decoration: none;">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit"
+                            style="width: 100%; background: #8CC63F; color: white; padding: 1rem; border-radius: 50px; border: none; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease;"
+                            onmouseover="this.style.background='#7AB52F'"
+                            onmouseout="this.style.background='#8CC63F'">
+                        Create Account
+                    </button>
+                </form>
+
+                <!-- Sign In Link -->
+                <div style="margin-top: 2rem; text-align: center;">
+                    <p style="color: #6B7280; font-size: 0.938rem;">
+                        Already have an account?
+                        <a href="{{ url_for('login') }}" style="color: #6366F1; font-weight: 600; text-decoration: none;">Sign In</a>
+                    </p>
+                </div>
+
+                <!-- Divider -->
+                <div style="position: relative; margin: 2rem 0;">
+                    <div style="position: absolute; inset: 0; display: flex; align-items: center;">
+                        <div style="width: 100%; border-top: 1px solid #E5E7EB;"></div>
+                    </div>
+                    <div style="position: relative; display: flex; justify-content: center;">
+                        <span style="padding: 0 1rem; background: white; color: #9CA3AF; font-size: 0.875rem;">Or continue with</span>
+                    </div>
+                </div>
+
+                <!-- Social Login -->
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                    <button type="button"
+                            style="display: flex; align-items: center; justify-content: center; background: #F3F4F6; color: #374151; padding: 0.875rem; border-radius: 12px; border: 1px solid #E5E7EB; font-weight: 500; cursor: pointer; transition: all 0.3s ease;"
+                            onmouseover="this.style.background='#E5E7EB'"
+                            onmouseout="this.style.background='#F3F4F6'">
+                        <svg style="width: 20px; height: 20px; margin-right: 0.5rem;" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                        Facebook
+                    </button>
+                    <button type="button"
+                            style="display: flex; align-items: center; justify-content: center; background: #F3F4F6; color: #374151; padding: 0.875rem; border-radius: 12px; border: 1px solid #E5E7EB; font-weight: 500; cursor: pointer; transition: all 0.3s ease;"
+                            onmouseover="this.style.background='#E5E7EB'"
+                            onmouseout="this.style.background='#F3F4F6'">
+                        <svg style="width: 20px; height: 20px; margin-right: 0.5rem;" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/>
+                        </svg>
+                        Google
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

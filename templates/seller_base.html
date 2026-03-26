@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div style="display: flex; min-height: 80vh;">
+
+    <!-- Seller Sidebar -->
+    <aside style="width: 280px; background: white; border-right: 1px solid var(--color-gray-200); padding: var(--spacing-xl);">
+        <h2 style="font-size: 1.125rem; font-weight: 700; color: var(--color-gray-900); margin-bottom: var(--spacing-xl);">Seller Dashboard</h2>
+        <nav style="display: flex; flex-direction: column; gap: var(--spacing-xs);">
+            <a href="/dashboard"
+               class="seller-nav-link {% if active_page == 'dashboard' %}active{% endif %}"
+               style="display: flex; align-items: center; padding: 0.875rem 1rem; font-size: 0.875rem; font-weight: 600; border-radius: var(--radius-md); text-decoration: none; transition: all var(--transition-fast); {% if active_page == 'dashboard' %}background: var(--color-primary-green); color: white;{% else %}color: var(--color-text-secondary);{% endif %}"
+               onmouseover="if(!this.classList.contains('active')) this.style.background='var(--color-gray-100)'"
+               onmouseout="if(!this.classList.contains('active')) this.style.background='transparent'">
+                <i class="fa-solid fa-chart-line" style="margin-right: var(--spacing-md); {% if active_page != 'dashboard' %}color: var(--color-secondary-purple);{% endif %}"></i>
+                Overview
+            </a>
+            <a href="/store-profile"
+               class="seller-nav-link {% if active_page == 'store_profile' %}active{% endif %}"
+               style="display: flex; align-items: center; padding: 0.875rem 1rem; font-size: 0.875rem; font-weight: 600; border-radius: var(--radius-md); text-decoration: none; transition: all var(--transition-fast); {% if active_page == 'store_profile' %}background: var(--color-primary-green); color: white;{% else %}color: var(--color-text-secondary);{% endif %}"
+               onmouseover="if(!this.classList.contains('active')) this.style.background='var(--color-gray-100)'"
+               onmouseout="if(!this.classList.contains('active')) this.style.background='transparent'">
+                <i class="fa-solid fa-store" style="margin-right: var(--spacing-md); {% if active_page != 'store_profile' %}color: var(--color-secondary-purple);{% endif %}"></i>
+                Store Profile
+            </a>
+            <a href="/seller/products"
+               class="seller-nav-link {% if active_page == 'products' %}active{% endif %}"
+               style="display: flex; align-items: center; padding: 0.875rem 1rem; font-size: 0.875rem; font-weight: 600; border-radius: var(--radius-md); text-decoration: none; transition: all var(--transition-fast); {% if active_page == 'products' %}background: var(--color-primary-green); color: white;{% else %}color: var(--color-text-secondary);{% endif %}"
+               onmouseover="if(!this.classList.contains('active')) this.style.background='var(--color-gray-100)'"
+               onmouseout="if(!this.classList.contains('active')) this.style.background='transparent'">
+                <i class="fa-solid fa-box" style="margin-right: var(--spacing-md); {% if active_page != 'products' %}color: var(--color-secondary-purple);{% endif %}"></i>
+                My Products
+            </a>
+            <a href="/seller/finances"
+               class="seller-nav-link {% if active_page == 'finances' %}active{% endif %}"
+               style="display: flex; align-items: center; padding: 0.875rem 1rem; font-size: 0.875rem; font-weight: 600; border-radius: var(--radius-md); text-decoration: none; transition: all var(--transition-fast); {% if active_page == 'finances' %}background: var(--color-primary-green); color: white;{% else %}color: var(--color-text-secondary);{% endif %}"
+               onmouseover="if(!this.classList.contains('active')) this.style.background='var(--color-gray-100)'"
+               onmouseout="if(!this.classList.contains('active')) this.style.background='transparent'">
+                <i class="fa-solid fa-dollar-sign" style="margin-right: var(--spacing-md); {% if active_page != 'finances' %}color: var(--color-secondary-purple);{% endif %}"></i>
+                Finances
+            </a>
+            <a href="/seller/orders"
+               class="seller-nav-link {% if active_page == 'orders' %}active{% endif %}"
+               style="display: flex; align-items: center; padding: 0.875rem 1rem; font-size: 0.875rem; font-weight: 600; border-radius: var(--radius-md); text-decoration: none; transition: all var(--transition-fast); {% if active_page == 'orders' %}background: var(--color-primary-green); color: white;{% else %}color: var(--color-text-secondary);{% endif %}"
+               onmouseover="if(!this.classList.contains('active')) this.style.background='var(--color-gray-100)'"
+               onmouseout="if(!this.classList.contains('active')) this.style.background='transparent'">
+                <i class="fa-solid fa-shopping-bag" style="margin-right: var(--spacing-md); {% if active_page != 'orders' %}color: var(--color-secondary-purple);{% endif %}"></i>
+                Orders
+            </a>
+            <a href="#"
+               style="display: flex; align-items: center; padding: 0.875rem 1rem; font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary); border-radius: var(--radius-md); text-decoration: none; transition: all var(--transition-fast);"
+               onmouseover="this.style.background='var(--color-gray-100)'"
+               onmouseout="this.style.background='transparent'">
+                <i class="fa-solid fa-gear" style="margin-right: var(--spacing-md); color: var(--color-secondary-purple);"></i>
+                Settings
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main style="flex: 1; padding: var(--spacing-3xl); background: var(--color-background-alt);">
+        {% block seller_content %}{% endblock %}
+    </main>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shabs Cuisine - Fresh & Frozen Delights</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        /* Purple Gradient Theme for Shabs Cuisine */
+        :root {
+            --purple-primary: #8B4789;
+            --purple-secondary: #6B3668;
+            --purple-light: #A855A8;
+        }
+
+        /* Mega Menu Styles */
+        .top-bar {
+            background: linear-gradient(135deg, var(--purple-primary), var(--purple-secondary));
+            padding: 10px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .top-bar small, .top-bar a {
+            color: #fff !important;
+        }
+
+        .navbar-custom {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            background: linear-gradient(135deg, var(--purple-primary), var(--purple-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.5rem;
+        }
+
+        .mega-menu {
+            position: static;
+        }
+
+        .mega-menu .dropdown-menu {
+            width: 100%;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            margin-top: 0;
+            border-radius: 0;
+            border-top: 3px solid var(--purple-primary);
+        }
+
+        .mega-menu-column h6 {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--purple-primary);
+        }
+
+        .mega-menu-column ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .mega-menu-column ul li {
+            margin-bottom: 8px;
+        }
+
+        .mega-menu-column ul li a {
+            color: #6c757d;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .mega-menu-column ul li a:hover {
+            color: var(--purple-primary);
+        }
+
+        /* Category Navigation Buttons */
+        .category-nav {
+            background-color: #f8f9fa;
+            padding: 15px 0;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .category-btn {
+            padding: 10px 30px;
+            margin: 0 10px;
+            border: 2px solid var(--purple-primary);
+            background-color: #fff;
+            color: var(--purple-primary);
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .category-btn:hover, .category-btn.active {
+            background: linear-gradient(135deg, var(--purple-primary), var(--purple-secondary));
+            color: #fff;
+        }
+
+        /* Filter Drawer Styles - 30% width, slides from right */
+        .filter-drawer {
+            position: fixed;
+            right: -30%;
+            top: 0;
+            width: 30%;
+            height: 100vh;
+            background-color: #fff;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            z-index: 1050;
+            overflow-y: auto;
+        }
+
+        .filter-drawer.open {
+            right: 0;
+        }
+
+        .filter-drawer-header {
+            padding: 20px;
+            background: linear-gradient(135deg, var(--purple-primary), var(--purple-secondary));
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .filter-drawer-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        .filter-drawer-body {
+            padding: 20px;
+        }
+
+        .filter-section {
+            margin-bottom: 25px;
+        }
+
+        .filter-section h6 {
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .filter-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1040;
+            display: none;
+        }
+
+        .filter-overlay.show {
+            display: block;
+        }
+
+        /* Filter Toggle Button with 3-line icon */
+        .filter-toggle-btn {
+            background: linear-gradient(135deg, var(--purple-primary), var(--purple-secondary));
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+        }
+
+        .filter-toggle-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Product Grid Styles */
+        .product-card {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(139, 71, 137, 0.2);
+        }
+
+        .product-card.highlight {
+            animation: highlightPulse 1.5s ease-in-out;
+            border: 2px solid var(--purple-primary);
+        }
+
+        @keyframes highlightPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(139, 71, 137, 0.7); }
+            50% { box-shadow: 0 0 20px 10px rgba(139, 71, 137, 0.3); }
+        }
+
+        .product-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        .product-wishlist {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: white;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .product-wishlist:hover {
+            background-color: #f8f9fa;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--purple-primary), var(--purple-secondary));
+            border: none;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .text-primary {
+            color: var(--purple-primary) !important;
+        }
+
+        /* No Results Message */
+        .no-results {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            margin: 40px 0;
+        }
+
+        .no-results.show {
+            display: block;
+        }
+
+        .no-results h3 {
+            color: var(--purple-primary);
+            margin-bottom: 15px;
+        }
+
+        .no-results p {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        /* Scroll to Top Button with Purple Gradient */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, var(--purple-primary), var(--purple-secondary));
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(139, 71, 137, 0.3);
+        }
+
+        .scroll-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(139, 71, 137, 0.5);
+        }
+
+        .scroll-to-top.show {
+            display: flex;
+        }
+
+        @media (max-width: 768px) {
+            .filter-drawer {
+                width: 80%;
+                right: -80%;
+            }
+
+            .category-btn {
+                margin: 5px;
+                padding: 8px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <small>
+                            <i class="bi bi-telephone"></i> +92 300 1234567 |
+                            <i class="bi bi-envelope"></i> info@shabscuisine.com
+                        </small>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <small>
+                            <a href="#" class="text-decoration-none me-3">Track Order</a>
+                            <a href="#" class="text-decoration-none">Help</a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light navbar-custom">
+            <div class="container">
+                <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">
+                    <i class="bi bi-egg-fried"></i> Shabs Cuisine
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <!-- Search Bar -->
+                    <form class="d-flex mx-auto" style="width: 50%;">
+                        <input class="form-control me-2" type="search" placeholder="Search for samosas, biryani, kebabs..." id="searchInput">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </form>
+
+                    <!-- Right Side Icons -->
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-person fs-5"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-heart fs-5"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link position-relative" href="#">
+                                <i class="bi bi-cart fs-5"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    0
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Mega Menu Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav">
+                        <li class="nav-item mega-menu dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                <i class="bi bi-grid-3x3-gap"></i> All Categories
+                            </a>
+                            <div class="dropdown-menu">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-md-4 mega-menu-column">
+                                            <h6>Frozen Items</h6>
+                                            <ul>
+                                                <li><a href="#">Samosas</a></li>
+                                                <li><a href="#">Spring Rolls</a></li>
+                                                <li><a href="#">Kebabs</a></li>
+                                                <li><a href="#">Parathas</a></li>
+                                                <li><a href="#">Biryani Packs</a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-4 mega-menu-column">
+                                            <h6>Fresh Items</h6>
+                                            <ul>
+                                                <li><a href="#">Tikka</a></li>
+                                                <li><a href="#">Tandoori</a></li>
+                                                <li><a href="#">Chutneys</a></li>
+                                                <li><a href="#">Raita</a></li>
+                                                <li><a href="#">Desserts</a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-4 mega-menu-column">
+                                            <h6>Platters</h6>
+                                            <ul>
+                                                <li><a href="#">BBQ Platters</a></li>
+                                                <li><a href="#">Appetizer Platters</a></li>
+                                                <li><a href="#">Biryani Platters</a></li>
+                                                <li><a href="#">Dessert Platters</a></li>
+                                                <li><a href="#">Vegetarian Platters</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Today's Specials</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Party Orders</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Best Sellers</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Category Navigation Buttons -->
+        <div class="category-nav">
+            <div class="container text-center">
+                <button class="category-btn active" data-category="all">All Items</button>
+                <button class="category-btn" data-category="frozen">Frozen</button>
+                <button class="category-btn" data-category="fresh">Fresh</button>
+                <button class="category-btn" data-category="platters">Platters</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Section -->
+    <main class="container-fluid py-4">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Shabs Cuisine Menu</h2>
+                <button class="filter-toggle-btn" id="filterToggle">
+                    <i class="bi bi-list"></i> Filters
+                </button>
+            </div>
+
+            <!-- No Results Message -->
+            <div class="no-results" id="noResults">
+                <h3>Oops! No matching items in Shabs Cuisine.</h3>
+                <p>Check our other local stores?</p>
+                <a href="{{ url_for('home') }}" class="btn btn-primary mt-3">Browse Other Stores</a>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="row g-4" id="productGrid">
+                {% for product in products %}
+                <div class="col-lg-3 col-md-4 col-sm-6 product-item" data-category="{{ product.category }}" data-price="{{ product.price }}">
+                    <div class="card product-card">
+                        <div class="position-relative">
+                            <img src="{{ product.image }}" class="product-image" alt="{{ product.name }}">
+                            {% if product.discount %}
+                            <span class="product-badge">-{{ product.discount }}%</span>
+                            {% endif %}
+                            <div class="product-wishlist">
+                                <i class="bi bi-heart"></i>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-title">{{ product.name }}</h6>
+                            <p class="text-muted small mb-2">{{ product.category }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="fw-bold text-primary">${{ product.price }}</span>
+                                    {% if product.old_price %}
+                                    <span class="text-muted text-decoration-line-through small">${{ product.old_price }}</span>
+                                    {% endif %}
+                                </div>
+                                <div class="text-warning small">
+                                    <i class="bi bi-star-fill"></i> {{ product.rating }}
+                                </div>
+                            </div>
+                            <button class="btn btn-primary w-100 mt-3">
+                                <i class="bi bi-cart-plus"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+
+    <!-- Filter Drawer -->
+    <div class="filter-drawer" id="filterDrawer">
+        <div class="filter-drawer-header">
+            <h5 class="mb-0">Filters</h5>
+            <button class="btn-close" id="closeFilter"></button>
+        </div>
+        <div class="filter-drawer-body">
+            <!-- Category Filter -->
+            <div class="filter-section">
+                <h6>Category</h6>
+                <div class="form-check">
+                    <input class="form-check-input category-filter" type="checkbox" value="frozen" id="cat1">
+                    <label class="form-check-label" for="cat1">Frozen</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input category-filter" type="checkbox" value="fresh" id="cat2">
+                    <label class="form-check-label" for="cat2">Fresh</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input category-filter" type="checkbox" value="platters" id="cat3">
+                    <label class="form-check-label" for="cat3">Platters</label>
+                </div>
+            </div>
+
+            <!-- Price Range Filter -->
+            <div class="filter-section">
+                <h6>Price Range</h6>
+                <div class="form-check">
+                    <input class="form-check-input price-filter" type="checkbox" value="0-10" id="price1">
+                    <label class="form-check-label" for="price1">$0 - $10</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input price-filter" type="checkbox" value="10-20" id="price2">
+                    <label class="form-check-label" for="price2">$10 - $20</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input price-filter" type="checkbox" value="20-40" id="price3">
+                    <label class="form-check-label" for="price3">$20 - $40</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input price-filter" type="checkbox" value="40-plus" id="price4">
+                    <label class="form-check-label" for="price4">$40+</label>
+                </div>
+            </div>
+
+            <!-- Rating Filter -->
+            <div class="filter-section">
+                <h6>Rating</h6>
+                <div class="form-check">
+                    <input class="form-check-input rating-filter" type="checkbox" value="4" id="rating1">
+                    <label class="form-check-label" for="rating1">
+                        <i class="bi bi-star-fill text-warning"></i> 4+ Stars
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input rating-filter" type="checkbox" value="3" id="rating2">
+                    <label class="form-check-label" for="rating2">
+                        <i class="bi bi-star-fill text-warning"></i> 3+ Stars
+                    </label>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary" id="applyFilters">Apply Filters</button>
+                <button class="btn btn-outline-secondary" id="clearFilters">Clear All</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Overlay -->
+    <div class="filter-overlay" id="filterOverlay"></div>
+
+    <!-- Scroll to Top Button -->
+    <div class="scroll-to-top" id="scrollToTop">
+        <i class="bi bi-arrow-up fs-4"></i>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Shabs Cuisine</h5>
+                    <p>Authentic flavors, delivered fresh to your door</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{{ url_for('index') }}" class="text-white-50">Home</a></li>
+                        <li><a href="{{ url_for('store') }}" class="text-white-50">Menu</a></li>
+                        <li><a href="#" class="text-white-50">About Us</a></li>
+                        <li><a href="#" class="text-white-50">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Follow Us</h5>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-white-50"><i class="bi bi-facebook fs-4"></i></a>
+                        <a href="#" class="text-white-50"><i class="bi bi-instagram fs-4"></i></a>
+                        <a href="#" class="text-white-50"><i class="bi bi-whatsapp fs-4"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="bg-white">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2024 Shabs Cuisine. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        // Filter Drawer Toggle
+        const filterToggle = document.getElementById('filterToggle');
+        const filterDrawer = document.getElementById('filterDrawer');
+        const closeFilter = document.getElementById('closeFilter');
+        const filterOverlay = document.getElementById('filterOverlay');
+
+        filterToggle.addEventListener('click', () => {
+            filterDrawer.classList.add('open');
+            filterOverlay.classList.add('show');
+        });
+
+        closeFilter.addEventListener('click', () => {
+            filterDrawer.classList.remove('open');
+            filterOverlay.classList.remove('show');
+        });
+
+        filterOverlay.addEventListener('click', () => {
+            filterDrawer.classList.remove('open');
+            filterOverlay.classList.remove('show');
+        });
+
+        // Category Button Navigation
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        const productItems = document.querySelectorAll('.product-item');
+        const noResults = document.getElementById('noResults');
+        const productGrid = document.getElementById('productGrid');
+
+        categoryButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all buttons
+                categoryButtons.forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+
+                const category = this.dataset.category;
+                let visibleCount = 0;
+
+                productItems.forEach(item => {
+                    if (category === 'all' || item.dataset.category === category) {
+                        item.style.display = 'block';
+                        visibleCount++;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                // Show/hide no results message
+                if (visibleCount === 0) {
+                    noResults.classList.add('show');
+                    productGrid.style.display = 'none';
+                } else {
+                    noResults.classList.remove('show');
+                    productGrid.style.display = 'flex';
+                }
+            });
+        });
+
+        // Enhanced Search Functionality with Highlighting
+        const searchInput = document.getElementById('searchInput');
+
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            let visibleCount = 0;
+
+            // Remove all highlights first
+            productItems.forEach(item => {
+                item.querySelector('.product-card').classList.remove('highlight');
+            });
+
+            if (searchTerm === '') {
+                // Show all products if search is empty
+                productItems.forEach(item => {
+                    item.style.display = 'block';
+                    visibleCount++;
+                });
+            } else {
+                productItems.forEach(item => {
+                    const productName = item.querySelector('.card-title').textContent.toLowerCase();
+                    const productCategory = item.querySelector('.text-muted.small').textContent.toLowerCase();
+
+                    if (productName.includes(searchTerm) || productCategory.includes(searchTerm)) {
+                        item.style.display = 'block';
+                        // Add highlight animation to matching products
+                        item.querySelector('.product-card').classList.add('highlight');
+                        visibleCount++;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            }
+
+            // Show/hide no results message
+            if (visibleCount === 0 && searchTerm !== '') {
+                noResults.classList.add('show');
+                productGrid.style.display = 'none';
+            } else {
+                noResults.classList.remove('show');
+                productGrid.style.display = 'flex';
+            }
+        });
+
+        // Scroll to Top Button
+        const scrollToTop = document.getElementById('scrollToTop');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollToTop.classList.add('show');
+            } else {
+                scrollToTop.classList.remove('show');
+            }
+        });
+
+        scrollToTop.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Filter Functionality
+        const applyFilters = document.getElementById('applyFilters');
+        const clearFilters = document.getElementById('clearFilters');
+        const categoryFilters = document.querySelectorAll('.category-filter');
+        const priceFilters = document.querySelectorAll('.price-filter');
+        const ratingFilters = document.querySelectorAll('.rating-filter');
+
+        applyFilters.addEventListener('click', () => {
+            const selectedCategories = Array.from(categoryFilters)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+
+            const selectedPrices = Array.from(priceFilters)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+
+            const selectedRatings = Array.from(ratingFilters)
+                .filter(cb => cb.checked)
+                .map(cb => parseFloat(cb.value));
+
+            let visibleCount = 0;
+
+            productItems.forEach(item => {
+                const category = item.dataset.category.toLowerCase();
+                const price = parseFloat(item.dataset.price);
+                const rating = parseFloat(item.querySelector('.text-warning').textContent.trim());
+
+                let showItem = true;
+
+                // Category filter
+                if (selectedCategories.length > 0 && !selectedCategories.includes(category)) {
+                    showItem = false;
+                }
+
+                // Price filter (updated for food pricing)
+                if (selectedPrices.length > 0) {
+                    let priceMatch = false;
+                    selectedPrices.forEach(range => {
+                        if (range === '0-10' && price >= 0 && price <= 10) priceMatch = true;
+                        if (range === '10-20' && price > 10 && price <= 20) priceMatch = true;
+                        if (range === '20-40' && price > 20 && price <= 40) priceMatch = true;
+                        if (range === '40-plus' && price > 40) priceMatch = true;
+                    });
+                    if (!priceMatch) showItem = false;
+                }
+
+                // Rating filter
+                if (selectedRatings.length > 0) {
+                    const minRating = Math.min(...selectedRatings);
+                    if (rating < minRating) showItem = false;
+                }
+
+                if (showItem) {
+                    item.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // Show/hide no results message
+            if (visibleCount === 0) {
+                noResults.classList.add('show');
+                productGrid.style.display = 'none';
+            } else {
+                noResults.classList.remove('show');
+                productGrid.style.display = 'flex';
+            }
+
+            // Close drawer after applying
+            filterDrawer.classList.remove('open');
+            filterOverlay.classList.remove('show');
+        });
+
+        clearFilters.addEventListener('click', () => {
+            categoryFilters.forEach(cb => cb.checked = false);
+            priceFilters.forEach(cb => cb.checked = false);
+            ratingFilters.forEach(cb => cb.checked = false);
+
+            productItems.forEach(item => {
+                item.style.display = 'block';
+            });
+
+            noResults.classList.remove('show');
+            productGrid.style.display = 'flex';
+        });
+
+        // Wishlist Toggle
+        document.querySelectorAll('.product-wishlist').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                icon.classList.toggle('bi-heart');
+                icon.classList.toggle('bi-heart-fill');
+                icon.classList.toggle('text-danger');
+            });
+        });
+    </script>
+</body>
+</html>

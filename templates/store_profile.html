@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Profile | Local Marketplace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+        body { font-family: 'Outfit', sans-serif; }
+        .loci-green { color: #8cc63f; }
+        .bg-loci-green { background-color: #8cc63f; }
+        .loci-purple { color: #6d5cae; }
+        .bg-loci-purple { background-color: #6d5cae; }
+        #map-preview { height: 300px; border-radius: 12px; }
+        .file-upload-success { display: none; }
+        .file-upload-success.show { display: inline-flex; }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <header class="py-4 px-6 flex justify-between items-center bg-white border-b border-gray-100 shadow-sm">
+        <a href="/" class="transition-opacity hover:opacity-80">
+            <img src="{{ url_for('static', filename='images/loci-logo.png') }}" alt="LOCI Local Marketplace" class="h-10 w-auto md:h-12 object-contain">
+        </a>
+        <div class="flex items-center space-x-6">
+            <span class="text-sm text-gray-600">Welcome, <span class="font-bold loci-purple">Lamia Gul</span></span>
+            <div class="relative">
+                <i class="fa-solid fa-bell loci-purple text-xl cursor-pointer"></i>
+                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold px-1 rounded-full">3</span>
+            </div>
+            <button class="loci-purple"><i class="fa-solid fa-bars text-2xl"></i></button>
+        </div>
+    </header>
+
+    <div class="flex min-h-screen">
+
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white border-r border-gray-100 shadow-sm">
+            <div class="p-6">
+                <h2 class="text-lg font-bold text-gray-800 mb-6">Seller Dashboard</h2>
+                <nav class="space-y-2">
+                    <a href="/dashboard" class="flex items-center px-4 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-lg transition">
+                        <i class="fa-solid fa-chart-line mr-3 loci-purple"></i>
+                        Overview
+                    </a>
+                    <a href="/store-profile" class="flex items-center px-4 py-3 text-sm font-semibold bg-loci-green text-white rounded-lg">
+                        <i class="fa-solid fa-store mr-3"></i>
+                        Store Profile
+                    </a>
+                    <a href="/seller/products" class="flex items-center px-4 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-lg transition">
+                        <i class="fa-solid fa-box mr-3 loci-purple"></i>
+                        My Products
+                    </a>
+                    <a href="/seller/finances" class="flex items-center px-4 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-lg transition">
+                        <i class="fa-solid fa-dollar-sign mr-3 loci-purple"></i>
+                        Finances
+                    </a>
+                    <a href="/seller/orders" class="flex items-center px-4 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-lg transition">
+                        <i class="fa-solid fa-shopping-bag mr-3 loci-purple"></i>
+                        Orders
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-lg transition">
+                        <i class="fa-solid fa-gear mr-3 loci-purple"></i>
+                        Settings
+                    </a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <div class="max-w-5xl mx-auto">
+
+                <!-- Location Alert -->
+                {% if store.location %}
+                <div class="mb-6 p-4 rounded-xl bg-[#8cc63f] text-white font-bold flex justify-between items-center shadow-lg">
+                    <span><i class="fa-solid fa-location-dot mr-2"></i> Location set to: {{ store.location }}</span>
+                    <button onclick="this.parentElement.remove()" class="text-white hover:text-gray-200">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                {% endif %}
+
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    {% for category, message in messages %}
+                      <div class="mb-6 p-4 rounded-xl bg-[#8cc63f] text-white font-bold flex justify-between items-center shadow-lg">
+                          <span><i class="fa-solid fa-circle-check mr-2"></i> {{ message }}</span>
+                          <button onclick="this.parentElement.remove()" class="text-white hover:text-gray-200">
+                              <i class="fa-solid fa-xmark"></i>
+                          </button>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
+
+                <!-- Page Header -->
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold text-gray-800 mb-2">Store Profile</h1>
+                    <p class="text-gray-500 text-sm">Manage your store information and financial details</p>
+                </div>
+
+                <!-- Form -->
+                <form action="/save-store-profile" method="POST" enctype="multipart/form-data">
+
+                    <!-- Profile Details Section -->
+                    <section class="bg-white p-8 rounded-[32px] shadow-sm border border-gray-50 mb-8">
+                        <h3 class="text-lg font-bold text-gray-800 mb-6">Profile Details</h3>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Store Name</label>
+                                <input type="text" name="store_name" value="{{ store.store_name }}"
+                                    class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-loci-green transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Store Description</label>
+                                <textarea name="store_description" rows="4"
+                                    class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-loci-green transition"
+                                    placeholder="Tell customers about your store...">{{ store.description or '' }}</textarea>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Business Email</label>
+                                    <input type="email" name="business_email" value="{{ store.business_email or '' }}"
+                                        class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-loci-green transition"
+                                        placeholder="business@example.com">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Phone Number</label>
+                                    <input type="tel" name="phone_number" value="{{ store.phone_number or '' }}"
+                                        class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-loci-green transition"
+                                        placeholder="+92 300 1234567">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Store Identity Section -->
+                    <section class="bg-white p-8 rounded-[32px] shadow-sm border border-gray-50 mb-8">
+                        <h3 class="text-lg font-bold text-gray-800 mb-6 border-b pb-4">Store Identity</h3>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Store Permalink</label>
+                                <div class="flex items-center">
+                                    <span class="bg-gray-100 text-gray-600 px-4 py-3 rounded-l-xl border border-r-0 border-gray-200 text-sm">locimarketplace.com/store/</span>
+                                    <input type="text" name="store_permalink" value="{{ store.store_url or 'shabs-cuisine' }}"
+                                        class="flex-1 border border-gray-200 rounded-r-xl px-4 py-3 text-sm outline-none focus:border-loci-green transition">
+                                </div>
+                                <p class="text-xs text-gray-400 mt-2">This is your unique store URL</p>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Store Logo</label>
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-24 h-24 bg-gray-100 rounded-xl border-2 border-dashed border-gray-200 flex items-center justify-center" id="logo-preview-box">
+                                        <i class="fa-solid fa-image text-3xl text-gray-300" id="logo-placeholder"></i>
+                                        <img id="logo-preview-img" src="" alt="Logo Preview" class="w-full h-full object-cover rounded-xl hidden">
+                                    </div>
+                                    <div class="flex-1">
+                                        <input type="file" name="store_logo" id="store_logo" class="hidden" accept="image/*" onchange="handleLogoUpload(this)">
+                                        <label for="store_logo" class="inline-block bg-loci-purple text-white px-6 py-2 rounded-lg text-sm font-semibold cursor-pointer hover:opacity-90 transition">
+                                            <i class="fa-solid fa-upload mr-2"></i>Upload Logo
+                                        </label>
+                                        <span class="file-upload-success ml-3 items-center gap-2 text-green-600 font-semibold text-sm" id="logo-success">
+                                            <i class="fa-solid fa-circle-check"></i> Uploaded
+                                        </span>
+                                        <p class="text-xs text-gray-400 mt-2">Recommended: 400x400px, PNG or JPG</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Store Locator Section -->
+                    <section class="bg-white p-8 rounded-[32px] shadow-sm border border-gray-50 mb-8">
+                        <h3 class="text-lg font-bold text-gray-800 mb-6 border-b pb-4">Store Locator</h3>
+                        <div class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Street Address</label>
+                                    <input type="text" name="street_address" placeholder="123 Main Street"
+                                        class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-loci-green transition">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 uppercase mb-2">City</label>
+                                    <input type="text" name="city" placeholder="Karachi"
+                                        class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-loci-green transition">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 uppercase mb-2">State/Province</label>
+                                    <input type="text" name="state" placeholder="Sindh"
+                                        class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-loci-green transition">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Postal Code</label>
+                                    <input type="text" name="postal_code" placeholder="75500"
+                                        class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-loci-green transition">
+                                </div>
+                            </div>
+
+                            <!-- Map Placeholder -->
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Store Location</label>
+                                <div id="map-preview" class="w-full border border-gray-200"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Personal Information Section -->
+                    <section class="bg-white p-8 rounded-[32px] shadow-sm border border-gray-50 mb-8">
+                        <h3 class="text-lg font-bold mb-6 border-b pb-4 text-gray-800">Personal Information</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2">First name</label>
+                                <input type="text" name="first_name" value="Lamia" class="w-full border border-gray-100 rounded-xl px-4 py-3 text-sm focus:border-loci-green outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2">Last name</label>
+                                <input type="text" name="last_name" value="Gul" class="w-full border border-gray-100 rounded-xl px-4 py-3 text-sm focus:border-loci-green outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2">Email address</label>
+                                <input type="email" name="email" placeholder="lamiagul434@gmail.com" class="w-full border border-gray-100 rounded-xl px-4 py-3 text-sm focus:border-loci-green outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2">Phone No</label>
+                                <input type="text" name="phone_no" placeholder="033-432-7580" class="w-full border border-gray-100 rounded-xl px-4 py-3 text-sm focus:border-loci-green outline-none">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Financial Information Section -->
+                    <section class="bg-white p-8 rounded-[32px] shadow-sm border border-gray-50 mb-8">
+                        <h3 class="text-lg font-bold text-gray-800 mb-6">Financial Information</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Account Number</label>
+                                <input type="text" name="acc_number"
+                                    class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-loci-green transition"
+                                    placeholder="Enter account number">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Account Title</label>
+                                <input type="text" name="acc_title"
+                                    class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-loci-green transition"
+                                    placeholder="Enter account title">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Routing Number</label>
+                                <input type="text" name="routing_number"
+                                    class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-loci-green transition"
+                                    placeholder="Enter routing number">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Tax Payer Number</label>
+                                <input type="text" name="tax_id"
+                                    class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-loci-green transition"
+                                    placeholder="Enter tax ID">
+                            </div>
+                        </div>
+
+                        <!-- W-9 Upload -->
+                        <div class="mt-6 border-2 border-dashed border-gray-200 p-8 rounded-xl text-center hover:border-loci-purple transition cursor-pointer" id="w9-upload-area">
+                            <input type="file" name="w9_pdf" id="w9_pdf" class="hidden" accept=".pdf" onchange="handleW9Upload(this)">
+                            <label for="w9_pdf" class="cursor-pointer">
+                                <i class="fa-solid fa-cloud-arrow-up text-4xl loci-purple mb-3 block" id="w9-icon"></i>
+                                <p class="text-sm font-bold loci-purple mb-1" id="w9-text">Upload W-9 Form (PDF)</p>
+                                <p class="text-xs text-gray-400" id="w9-subtext">Click to browse or drag and drop</p>
+                                <span class="file-upload-success mt-3 items-center gap-2 text-green-600 font-semibold text-sm" id="w9-success">
+                                    <i class="fa-solid fa-circle-check"></i> PDF Uploaded Successfully
+                                </span>
+                            </label>
+                        </div>
+                    </section>
+
+                    <!-- Action Buttons -->
+                    <div class="flex justify-end space-x-4">
+                        <button type="button" onclick="window.location.href='/dashboard'"
+                            class="text-gray-400 font-bold px-8 py-3 rounded-xl hover:bg-gray-100 transition">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            class="bg-loci-purple text-white px-10 py-3 rounded-xl font-bold shadow-sm hover:opacity-90 transition">
+                            Save Changes
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </main>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white pt-16 pb-8 border-t border-gray-100 mt-10">
+        <div class="container mx-auto px-6 max-w-7xl flex flex-col md:flex-row justify-between">
+            <div class="mb-10 md:mb-0">
+                <a href="/" class="inline-block mb-6 transition-opacity hover:opacity-80">
+                    <img src="{{ url_for('static', filename='images/loci-logo.png') }}" alt="LOCI Local Marketplace" class="h-10 w-auto object-contain opacity-70">
+                </a>
+                <h5 class="font-bold text-xs tracking-widest mb-4">LET US HELP YOU</h5>
+                <p class="text-gray-500 text-sm mb-1">If you have any questions, please contact us at:</p>
+                <a href="mailto:support@locimarketplace.com" class="loci-green font-bold text-sm underline">support@locimarketplace.com</a>
+
+                <h5 class="font-bold text-xs tracking-widest mt-8 mb-4 uppercase">Social Media</h5>
+                <div class="flex space-x-3">
+                    <span class="w-10 h-10 bg-loci-green rounded-full flex items-center justify-center text-white cursor-pointer hover:opacity-90 transition">
+                        <i class="fa-brands fa-facebook-f"></i>
+                    </span>
+                    <span class="w-10 h-10 bg-loci-green rounded-full flex items-center justify-center text-white cursor-pointer hover:opacity-90 transition">
+                        <i class="fa-brands fa-instagram"></i>
+                    </span>
+                    <span class="w-10 h-10 bg-loci-green rounded-full flex items-center justify-center text-white cursor-pointer hover:opacity-90 transition">
+                        <i class="fa-brands fa-linkedin-in"></i>
+                    </span>
+                    <span class="w-10 h-10 bg-loci-green rounded-full flex items-center justify-center text-white cursor-pointer hover:opacity-90 transition">
+                        <i class="fa-brands fa-twitter"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="md:w-1/4">
+                <h5 class="font-bold text-sm mb-6 uppercase">HOME</h5>
+                <ul class="space-y-4 text-gray-500 text-sm font-medium">
+                    <li><a href="/" class="hover:text-loci-green transition">Home</a></li>
+                    <li><a href="/products" class="hover:text-loci-green transition">Products</a></li>
+                    <li><a href="/dashboard" class="hover:text-loci-green transition">Dashboard</a></li>
+                    <li><a href="#" class="hover:text-loci-green transition">Wishlist</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Leaflet Map with Karachi coordinates
+        var map = L.map('map-preview').setView([24.8607, 67.0011], 13);
+        var marker = null;
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Add initial marker for Karachi
+        marker = L.marker([24.8607, 67.0011]).addTo(map)
+            .bindPopup('Karachi, Pakistan')
+            .openPopup();
+
+        // Function to update map based on address input
+        function updateMap() {
+            const streetAddress = document.querySelector('input[name="street_address"]').value;
+            const city = document.querySelector('input[name="city"]').value;
+            const state = document.querySelector('input[name="state"]').value;
+
+            if (city) {
+                const fullAddress = `${streetAddress}, ${city}, ${state}`.trim();
+
+                // Use Nominatim geocoding API (free OpenStreetMap service)
+                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.length > 0) {
+                            const lat = parseFloat(data[0].lat);
+                            const lon = parseFloat(data[0].lon);
+
+                            // Update map view
+                            map.setView([lat, lon], 15);
+
+                            // Remove old marker and add new one
+                            if (marker) {
+                                map.removeLayer(marker);
+                            }
+                            marker = L.marker([lat, lon]).addTo(map)
+                                .bindPopup(fullAddress)
+                                .openPopup();
+                        }
+                    })
+                    .catch(error => console.log('Geocoding error:', error));
+            }
+        }
+
+        // Add event listeners to address fields
+        document.querySelector('input[name="street_address"]').addEventListener('blur', updateMap);
+        document.querySelector('input[name="city"]').addEventListener('blur', updateMap);
+        document.querySelector('input[name="state"]').addEventListener('blur', updateMap);
+
+        // Handle Logo Upload
+        function handleLogoUpload(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    // Show preview
+                    document.getElementById('logo-placeholder').classList.add('hidden');
+                    document.getElementById('logo-preview-img').src = e.target.result;
+                    document.getElementById('logo-preview-img').classList.remove('hidden');
+
+                    // Show success indicator
+                    document.getElementById('logo-success').classList.add('show');
+                };
+
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Handle W-9 Upload
+        function handleW9Upload(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+
+                // Update UI to show success
+                document.getElementById('w9-icon').className = 'fa-solid fa-file-pdf text-4xl text-green-600 mb-3 block';
+                document.getElementById('w9-text').textContent = file.name;
+                document.getElementById('w9-text').className = 'text-sm font-bold text-green-600 mb-1';
+                document.getElementById('w9-subtext').classList.add('hidden');
+                document.getElementById('w9-success').classList.add('show');
+            }
+        }
+
+        // Handle Form Submission with Toast Notification
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Show toast notification
+            showToast('Store Profile Updated Successfully!');
+
+            // Submit form after short delay
+            setTimeout(() => {
+                this.submit();
+            }, 1500);
+        });
+
+        // Toast Notification Function
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-8 right-8 bg-[#8cc63f] text-white px-6 py-4 rounded-xl shadow-lg z-50 flex items-center gap-3 animate-slide-in';
+            toast.innerHTML = `
+                <i class="fa-solid fa-circle-check text-xl"></i>
+                <span class="font-semibold">${message}</span>
+            `;
+
+            document.body.appendChild(toast);
+
+            // Add animation styles
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slide-in {
+                    from { transform: translateX(400px); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                .animate-slide-in { animation: slide-in 0.3s ease-out; }
+            `;
+            document.head.appendChild(style);
+
+            // Remove toast after 3 seconds
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(400px)';
+                toast.style.transition = 'all 0.3s ease-out';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+
+</body>
+</html>

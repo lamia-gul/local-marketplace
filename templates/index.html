@@ -1,0 +1,1454 @@
+{% extends "base.html" %}
+
+{% block title %}Local Marketplace - Your Marketplace. Your Store. Your Success.{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Hero Section with Plus Pattern */
+    .hero-gradient {
+        background: linear-gradient(135deg, #A855F7 0%, #EC4899 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .plus-pattern {
+        position: absolute;
+        inset: 0;
+        background-image:
+            repeating-linear-gradient(0deg, transparent, transparent 50px, rgba(255, 255, 255, 0.05) 50px, rgba(255, 255, 255, 0.05) 51px),
+            repeating-linear-gradient(90deg, transparent, transparent 50px, rgba(255, 255, 255, 0.05) 50px, rgba(255, 255, 255, 0.05) 51px);
+        opacity: 0.3;
+    }
+
+    /* Feature Cards */
+    .feature-card {
+        background: var(--glass-white);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 1px solid var(--border-stone);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .feature-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2.5rem;
+    }
+
+    /* Category Cards */
+    .category-card {
+        position: relative;
+        border-radius: 20px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        height: 280px;
+    }
+
+    .category-card:hover {
+        transform: scale(1.03);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .category-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .category-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+        display: flex;
+        align-items: flex-end;
+        padding: 1.5rem;
+    }
+
+    .category-name {
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    /* Store Cards */
+    .store-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        min-width: 320px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+
+    .store-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .store-scroll {
+        display: flex;
+        gap: 2rem;
+        overflow-x: auto;
+        padding: 2rem 0;
+        scrollbar-width: none;
+    }
+
+    .store-scroll::-webkit-scrollbar {
+        display: none;
+    }
+
+    .store-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .badge-food {
+        background: linear-gradient(135deg, #F59E0B 0%, #EF4444 100%);
+        color: white;
+    }
+
+    .badge-fashion {
+        background: linear-gradient(135deg, #EC4899 0%, #8B5CF6 100%);
+        color: white;
+    }
+
+    .badge-electronics {
+        background: linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%);
+        color: white;
+    }
+
+    /* Pill Buttons */
+    .pill-btn {
+        padding: 1rem 2.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        display: inline-block;
+        text-decoration: none;
+    }
+
+    .pill-btn-primary {
+        background: white;
+        color: #A855F7;
+    }
+
+    .pill-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+    }
+
+    .pill-btn-secondary {
+        background: #8CC63F;
+        color: white;
+    }
+
+    .pill-btn-secondary:hover {
+        background: #7AB52F;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(140, 198, 63, 0.4);
+    }
+
+    /* CTA Section */
+    .cta-gradient {
+        background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+    }
+
+    /* Glassmorphism Newsletter */
+    .glass-newsletter {
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 40px;
+        padding: 3rem;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+    }
+
+    .email-pill-input {
+        background: white;
+        border-radius: 9999px;
+        padding: 1rem 1.5rem;
+        border: 1px solid #e5e7eb;
+        width: 100%;
+        font-size: 1rem;
+        outline: none;
+        transition: all 0.3s ease;
+    }
+
+    .email-pill-input:focus {
+        border-color: #A855F7;
+        box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+    }
+
+    @media (max-width: 640px) {
+        .glass-newsletter {
+            padding: 2rem;
+            border-radius: 24px;
+        }
+    }
+
+    /* Explore Categories Section - Editorial Cards */
+    .explore-categories-section {
+        background: var(--bg-alabaster);
+        padding: 80px 0;
+        transition: background 0.3s ease;
+    }
+
+    .explore-header {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+
+    .explore-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-forest);
+        margin-bottom: 0.75rem;
+        letter-spacing: -0.02em;
+    }
+
+    .explore-subtitle {
+        font-size: 1.125rem;
+        color: var(--text-main);
+        opacity: 0.7;
+        font-weight: 400;
+    }
+
+    /* Editorial Cards Grid - 3:4 Aspect Ratio */
+    .editorial-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .editorial-category-card {
+        position: relative;
+        aspect-ratio: 3 / 4;
+        border-radius: 16px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+        text-decoration: none;
+    }
+
+    .editorial-category-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .editorial-card-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+
+    .editorial-category-card:hover .editorial-card-image {
+        transform: scale(1.05);
+    }
+
+    .editorial-card-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent 50%);
+    }
+
+    .editorial-card-label {
+        position: absolute;
+        bottom: 24px;
+        left: 24px;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: white;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        z-index: 10;
+    }
+
+    /* View All Button */
+    .view-all-categories-btn {
+        display: inline-block;
+        margin-top: 3rem;
+        padding: 1rem 2.5rem;
+        background: transparent;
+        border: 2px solid var(--local-green);
+        border-radius: 50px;
+        color: var(--local-green);
+        font-size: 0.938rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease-in-out;
+        cursor: pointer;
+    }
+
+    .view-all-categories-btn:hover {
+        background: var(--local-green);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(140, 198, 63, 0.3);
+    }
+
+    .view-all-btn-container {
+        text-align: center;
+        margin-top: 1rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .editorial-cards-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .editorial-cards-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .editorial-card-label {
+            font-size: 1rem;
+            bottom: 16px;
+            left: 16px;
+        }
+
+        .explore-title {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .editorial-cards-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .explore-categories-section {
+            padding: 60px 0;
+        }
+    }
+
+    /* Local Featured Stores Section */
+    .local-stores-section {
+        background: var(--bg-alabaster);
+        padding: 80px 0;
+        transition: background 0.3s ease;
+    }
+
+    .stores-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .stores-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-forest);
+        margin-bottom: 0.75rem;
+        letter-spacing: -0.02em;
+    }
+
+    .stores-subtitle {
+        font-size: 1.125rem;
+        color: var(--text-main);
+        opacity: 0.7;
+        font-weight: 400;
+    }
+
+    /* Store Cards Horizontal Scroll */
+    .store-cards-container {
+        display: flex;
+        gap: 2rem;
+        overflow-x: auto;
+        padding: 1rem 0 2rem 0;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Hide scrollbar but keep functionality */
+    .store-cards-container::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .store-cards-container::-webkit-scrollbar-track {
+        background: var(--border-stone);
+        border-radius: 10px;
+    }
+
+    .store-cards-container::-webkit-scrollbar-thumb {
+        background: var(--text-main);
+        opacity: 0.3;
+        border-radius: 10px;
+    }
+
+    .store-cards-container::-webkit-scrollbar-thumb:hover {
+        opacity: 0.5;
+    }
+
+    /* Store Card */
+    .featured-store-card {
+        background: var(--glass-white);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 2rem;
+        min-width: 380px;
+        max-width: 380px;
+        border: 1px solid var(--border-stone);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+    }
+
+    .featured-store-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Store Image */
+    .store-card-image {
+        width: 100%;
+        height: 200px;
+        border-radius: 16px;
+        object-fit: cover;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Store Header */
+    .store-card-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .store-logo-circle {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: var(--local-green);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(140, 198, 63, 0.3);
+    }
+
+    .store-info {
+        flex: 1;
+    }
+
+    .store-name-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .store-name {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--primary-forest);
+    }
+
+    .verified-badge {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--local-green);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.75rem;
+    }
+
+    .store-category-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        background: var(--border-stone);
+        color: var(--text-main);
+    }
+
+    /* Store Tagline */
+    .store-tagline {
+        font-size: 0.938rem;
+        color: var(--text-main);
+        opacity: 0.7;
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+    }
+
+    /* View Store Button */
+    .view-store-btn {
+        width: 100%;
+        padding: 0.875rem 1.5rem;
+        background: var(--local-green);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-size: 0.938rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .view-store-btn:hover {
+        background: #7AB52F;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(140, 198, 63, 0.4);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .featured-store-card {
+            min-width: 320px;
+            max-width: 320px;
+            padding: 1.5rem;
+        }
+
+        .store-card-image {
+            height: 180px;
+        }
+
+        .stores-title {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .featured-store-card {
+            min-width: 280px;
+            max-width: 280px;
+        }
+
+        .local-stores-section {
+            padding: 60px 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Include Location Modal -->
+{% include 'location_modal.html' %}
+
+<!-- Hero Section with Plus Pattern -->
+<section class="hero-gradient" style="padding: 120px 0;">
+    <div class="plus-pattern"></div>
+    <div class="container mx-auto px-8" style="position: relative; z-index: 1;">
+        <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+            <h1 style="font-size: 4rem; font-weight: 700; color: white; line-height: 1.1; margin-bottom: 1.5rem;">
+                Your Marketplace.<br>Your Store.<br>Your Success.
+            </h1>
+            <p style="font-size: 1.25rem; color: rgba(255, 255, 255, 0.9); font-weight: 300; margin-bottom: 3rem; line-height: 1.6;">
+                Join thousands of sellers growing their business on Pakistan's leading local marketplace
+            </p>
+            <a href="/products" class="pill-btn pill-btn-primary hover:bg-gray-100 transition duration-300">
+                Shop Now
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Explore Categories Section -->
+<section class="explore-categories-section">
+    <div class="container mx-auto px-8">
+        <div class="explore-header">
+            <h2 class="explore-title">Explore Categories</h2>
+            <p class="explore-subtitle">Discover products from local stores near you</p>
+        </div>
+
+        <div class="editorial-cards-grid">
+            <!-- Groceries -->
+            <a href="/category/groceries" class="editorial-category-card">
+                <img src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=600&h=800&fit=crop"
+                     alt="Groceries"
+                     class="editorial-card-image">
+                <div class="editorial-card-overlay"></div>
+                <span class="editorial-card-label">Groceries</span>
+            </a>
+
+            <!-- Electronics -->
+            <a href="/category/electronics" class="editorial-category-card">
+                <img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=600&h=800&fit=crop"
+                     alt="Electronics"
+                     class="editorial-card-image">
+                <div class="editorial-card-overlay"></div>
+                <span class="editorial-card-label">Electronics</span>
+            </a>
+
+            <!-- Health & Beauty -->
+            <a href="/category/health-beauty" class="editorial-category-card">
+                <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=600&h=800&fit=crop"
+                     alt="Health & Beauty"
+                     class="editorial-card-image">
+                <div class="editorial-card-overlay"></div>
+                <span class="editorial-card-label">Health & Beauty</span>
+            </a>
+
+            <!-- Home & Life Style -->
+            <a href="/category/home-lifestyle" class="editorial-category-card">
+                <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?w=600&h=800&fit=crop"
+                     alt="Home & Life Style"
+                     class="editorial-card-image">
+                <div class="editorial-card-overlay"></div>
+                <span class="editorial-card-label">Home & Living</span>
+            </a>
+
+            <!-- Stationery & Craft -->
+            <a href="/category/stationery-craft" class="editorial-category-card">
+                <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600&h=800&fit=crop"
+                     alt="Stationery & Craft"
+                     class="editorial-card-image">
+                <div class="editorial-card-overlay"></div>
+                <span class="editorial-card-label">Stationery</span>
+            </a>
+
+            <!-- Kids -->
+            <a href="/category/kids" class="editorial-category-card">
+                <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=600&h=800&fit=crop"
+                     alt="Kids"
+                     class="editorial-card-image">
+                <div class="editorial-card-overlay"></div>
+                <span class="editorial-card-label">Kids</span>
+            </a>
+
+            <!-- Men's Care -->
+            <a href="/category/mens-care" class="editorial-category-card">
+                <img src="https://images.unsplash.com/photo-1621607512214-68297480165e?w=600&h=800&fit=crop"
+                     alt="Men's Care"
+                     class="editorial-card-image">
+                <div class="editorial-card-overlay"></div>
+                <span class="editorial-card-label">Men's Care</span>
+            </a>
+
+            <!-- Men's Fashion -->
+            <a href="/category/mens-fashion" class="editorial-category-card">
+                <img src="https://images.unsplash.com/photo-1523398002811-999ca8dec234?w=600&h=800&fit=crop"
+                     alt="Men's Fashion"
+                     class="editorial-card-image">
+                <div class="editorial-card-overlay"></div>
+                <span class="editorial-card-label">Men's Fashion</span>
+            </a>
+        </div>
+
+        <!-- View All Button -->
+        <div class="view-all-btn-container">
+            <a href="/all-categories" class="view-all-categories-btn">
+                View All Categories
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Local Featured Stores Section -->
+<section class="local-stores-section">
+    <div class="container mx-auto px-8">
+        <div class="stores-header">
+            <h2 class="stores-title">Shop from Local Favorites</h2>
+            <p class="stores-subtitle">Trusted stores in your neighborhood</p>
+        </div>
+
+        <div class="store-cards-container">
+            <!-- Shabs Cuisine -->
+            <a href="/store-profile?store=shabs-cuisine" class="featured-store-card">
+                <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&h=600&fit=crop"
+                     alt="Shabs Cuisine"
+                     class="store-card-image">
+
+                <div class="store-card-header">
+                    <div class="store-logo-circle">
+                        🍽️
+                    </div>
+                    <div class="store-info">
+                        <div class="store-name-row">
+                            <h3 class="store-name">Shabs Cuisine</h3>
+                            <div class="verified-badge">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                        </div>
+                        <span class="store-category-badge">Food & Groceries</span>
+                    </div>
+                </div>
+
+                <p class="store-tagline">
+                    Premium Frozen Selections | Karachi's Signature Rolls & Samosas
+                </p>
+
+                <button class="view-store-btn">
+                    View Store
+                </button>
+            </a>
+
+            <!-- Fresh Mart Gulshan -->
+            <a href="/store-profile?store=fresh-mart" class="featured-store-card">
+                <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=600&fit=crop"
+                     alt="Fresh Mart"
+                     class="store-card-image">
+
+                <div class="store-card-header">
+                    <div class="store-logo-circle">
+                        🛒
+                    </div>
+                    <div class="store-info">
+                        <div class="store-name-row">
+                            <h3 class="store-name">Fresh Mart Gulshan</h3>
+                            <div class="verified-badge">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                        </div>
+                        <span class="store-category-badge">Groceries</span>
+                    </div>
+                </div>
+
+                <p class="store-tagline">
+                    Organic produce and daily essentials delivered fresh to your door
+                </p>
+
+                <button class="view-store-btn">
+                    View Store
+                </button>
+            </a>
+
+            <!-- Tech Corner Clifton -->
+            <a href="/store-profile?store=tech-corner" class="featured-store-card">
+                <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=800&h=600&fit=crop"
+                     alt="Tech Corner"
+                     class="store-card-image">
+
+                <div class="store-card-header">
+                    <div class="store-logo-circle">
+                        📱
+                    </div>
+                    <div class="store-info">
+                        <div class="store-name-row">
+                            <h3 class="store-name">Tech Corner Clifton</h3>
+                            <div class="verified-badge">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                        </div>
+                        <span class="store-category-badge">Electronics</span>
+                    </div>
+                </div>
+
+                <p class="store-tagline">
+                    Latest gadgets and electronics with expert support and warranty
+                </p>
+
+                <button class="view-store-btn">
+                    View Store
+                </button>
+            </a>
+
+            <!-- Style Hub DHA -->
+            <a href="/store-profile?store=style-hub" class="featured-store-card">
+                <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop"
+                     alt="Style Hub"
+                     class="store-card-image">
+
+                <div class="store-card-header">
+                    <div class="store-logo-circle">
+                        👔
+                    </div>
+                    <div class="store-info">
+                        <div class="store-name-row">
+                            <h3 class="store-name">Style Hub DHA</h3>
+                            <div class="verified-badge">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                        </div>
+                        <span class="store-category-badge">Fashion</span>
+                    </div>
+                </div>
+
+                <p class="store-tagline">
+                    Curated fashion collections for the modern wardrobe
+                </p>
+
+                <button class="view-store-btn">
+                    View Store
+                </button>
+            </a>
+
+            <!-- Organic Bazaar -->
+            <a href="/store-profile?store=organic-bazaar" class="featured-store-card">
+                <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=800&h=600&fit=crop"
+                     alt="Organic Bazaar"
+                     class="store-card-image">
+
+                <div class="store-card-header">
+                    <div class="store-logo-circle">
+                        🌿
+                    </div>
+                    <div class="store-info">
+                        <div class="store-name-row">
+                            <h3 class="store-name">Organic Bazaar</h3>
+                            <div class="verified-badge">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                        </div>
+                        <span class="store-category-badge">Health & Wellness</span>
+                    </div>
+                </div>
+
+                <p class="store-tagline">
+                    100% organic products for a healthier lifestyle
+                </p>
+
+                <button class="view-store-btn">
+                    View Store
+                </button>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Grid -->
+<section style="background: #F9FAFB; padding: 100px 0;">
+    <div class="container mx-auto px-8">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <h2 style="font-size: 2.5rem; font-weight: 600; color: #111827; margin-bottom: 1rem;">
+                Everything You Need to Succeed
+            </h2>
+            <p style="font-size: 1.125rem; color: #6B7280;">
+                Powerful tools to help you grow your business
+            </p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem;">
+            <!-- Feature 1 -->
+            <div class="feature-card">
+                <div class="feature-icon" style="background: linear-gradient(135deg, #A855F7 0%, #EC4899 100%);">
+                    ⚡
+                </div>
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: #111827; margin-bottom: 0.75rem;">
+                    Easy Setup
+                </h3>
+                <p style="font-size: 0.938rem; color: #6B7280; line-height: 1.6;">
+                    Get your store online in minutes with our simple setup process
+                </p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="feature-card">
+                <div class="feature-icon" style="background: linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%);">
+                    📈
+                </div>
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: #111827; margin-bottom: 0.75rem;">
+                    Grow Your Business
+                </h3>
+                <p style="font-size: 0.938rem; color: #6B7280; line-height: 1.6;">
+                    Reach thousands of local customers in your neighborhood
+                </p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="feature-card">
+                <div class="feature-icon" style="background: linear-gradient(135deg, #10B981 0%, #34D399 100%);">
+                    💰
+                </div>
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: #111827; margin-bottom: 0.75rem;">
+                    Secure Payments
+                </h3>
+                <p style="font-size: 0.938rem; color: #6B7280; line-height: 1.6;">
+                    Fast and secure payment processing with instant payouts
+                </p>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="feature-card">
+                <div class="feature-icon" style="background: linear-gradient(135deg, #F59E0B 0%, #EF4444 100%);">
+                    📊
+                </div>
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: #111827; margin-bottom: 0.75rem;">
+                    Analytics Dashboard
+                </h3>
+                <p style="font-size: 0.938rem; color: #6B7280; line-height: 1.6;">
+                    Track your sales and performance with detailed insights
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Seller CTA Section -->
+<section class="cta-gradient" style="padding: 120px 0; margin-top: 80px;">
+    <div class="container mx-auto px-8">
+        <div style="max-width: 700px; margin: 0 auto; text-align: center;">
+            <h2 style="font-size: 3rem; font-weight: 700; color: white; line-height: 1.2; margin-bottom: 1.5rem;">
+                Ready to Start Your Own Store?
+            </h2>
+            <p style="font-size: 1.25rem; color: rgba(255, 255, 255, 0.9); margin-bottom: 3rem; line-height: 1.6;">
+                Join Local Marketplace today and start selling to thousands of customers in your neighborhood
+            </p>
+            <a href="/create-store" class="pill-btn pill-btn-primary" style="font-size: 1.125rem;">
+                Create Your Store Now
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Floating Live Chat Widget -->
+<div id="chatWidget">
+    <!-- Chat Toggle Button -->
+    <button id="chatToggle" class="chat-toggle">
+        <i class="fa-solid fa-comments"></i>
+        <span class="chat-badge">1</span>
+    </button>
+
+    <!-- Chat Window -->
+    <div id="chatWindow" class="chat-window">
+        <!-- Chat Header -->
+        <div class="chat-header">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #A855F7 0%, #EC4899 100%); display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-headset" style="color: white; font-size: 1.125rem;"></i>
+                </div>
+                <div>
+                    <h3 style="font-size: 1rem; font-weight: 600; color: white; margin: 0;">Local Marketplace Support</h3>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.25rem;">
+                        <span class="online-indicator"></span>
+                        <span style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.8);">Online</span>
+                    </div>
+                </div>
+            </div>
+            <button id="chatClose" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; padding: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.3s ease;"
+                    onmouseover="this.style.background='rgba(255, 255, 255, 0.1)'"
+                    onmouseout="this.style.background='none'">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Chat Messages -->
+        <div id="chatMessages" class="chat-messages">
+            <!-- Messages will be added here dynamically -->
+        </div>
+
+        <!-- Chat Input -->
+        <div class="chat-input-container">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Type your message..." onkeypress="handleChatKeyPress(event)">
+            <button onclick="sendMessage()" class="chat-send-btn">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Chat Widget Styles */
+    #chatWidget {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 9999;
+    }
+
+    .chat-toggle {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #A855F7 0%, #EC4899 100%);
+        border: none;
+        color: white;
+        font-size: 1.75rem;
+        cursor: pointer;
+        box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4);
+        transition: all 0.3s ease;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .chat-toggle:hover {
+        transform: scale(1.1);
+        box-shadow: 0 12px 32px rgba(168, 85, 247, 0.5);
+    }
+
+    .chat-badge {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        background: #10B981;
+        color: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border: 3px solid white;
+        animation: pulse-badge 2s infinite;
+    }
+
+    @keyframes pulse-badge {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+
+    .chat-window {
+        position: absolute;
+        bottom: 80px;
+        right: 0;
+        width: 380px;
+        height: 550px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        animation: slideUp 0.3s ease;
+    }
+
+    .chat-window.active {
+        display: flex;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .chat-header {
+        background: linear-gradient(135deg, #A855F7 0%, #EC4899 100%);
+        padding: 1.25rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .online-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #10B981;
+        animation: pulse-online 2s infinite;
+    }
+
+    @keyframes pulse-online {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    .chat-messages {
+        flex: 1;
+        padding: 1.5rem;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        background: #F9FAFB;
+    }
+
+    .chat-messages::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .chat-messages::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+        background: #D1D5DB;
+        border-radius: 3px;
+    }
+
+    .message {
+        display: flex;
+        gap: 0.75rem;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.agent {
+        align-self: flex-start;
+    }
+
+    .message.user {
+        align-self: flex-end;
+        flex-direction: row-reverse;
+    }
+
+    .message-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 1rem;
+    }
+
+    .message.agent .message-avatar {
+        background: linear-gradient(135deg, #A855F7 0%, #EC4899 100%);
+        color: white;
+    }
+
+    .message.user .message-avatar {
+        background: #8CC63F;
+        color: white;
+    }
+
+    .message-content {
+        max-width: 70%;
+        padding: 0.875rem 1.125rem;
+        border-radius: 16px;
+        font-size: 0.938rem;
+        line-height: 1.5;
+    }
+
+    .message.agent .message-content {
+        background: white;
+        color: #374151;
+        border-bottom-left-radius: 4px;
+    }
+
+    .message.user .message-content {
+        background: #8CC63F;
+        color: white;
+        border-bottom-right-radius: 4px;
+    }
+
+    .message-content a {
+        color: #6366F1;
+        text-decoration: underline;
+        font-weight: 600;
+    }
+
+    .message.user .message-content a {
+        color: white;
+        text-decoration: underline;
+    }
+
+    .chat-input-container {
+        padding: 1rem;
+        background: white;
+        border-top: 1px solid #E5E7EB;
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    .chat-input {
+        flex: 1;
+        padding: 0.875rem 1rem;
+        border: 2px solid #E5E7EB;
+        border-radius: 50px;
+        font-size: 0.938rem;
+        outline: none;
+        transition: all 0.3s ease;
+    }
+
+    .chat-input:focus {
+        border-color: #A855F7;
+        box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+    }
+
+    .chat-send-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #A855F7 0%, #EC4899 100%);
+        border: none;
+        color: white;
+        font-size: 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .chat-send-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+    }
+
+    .typing-indicator {
+        display: flex;
+        gap: 0.25rem;
+        padding: 0.875rem 1.125rem;
+        background: white;
+        border-radius: 16px;
+        border-bottom-left-radius: 4px;
+        width: fit-content;
+    }
+
+    .typing-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #9CA3AF;
+        animation: typing 1.4s infinite;
+    }
+
+    .typing-dot:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+
+    @keyframes typing {
+        0%, 60%, 100% { transform: translateY(0); }
+        30% { transform: translateY(-10px); }
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 480px) {
+        .chat-window {
+            width: calc(100vw - 40px);
+            height: calc(100vh - 140px);
+            bottom: 80px;
+            right: 20px;
+        }
+
+        #chatWidget {
+            bottom: 20px;
+            right: 20px;
+        }
+    }
+</style>
+
+<script>
+    let chatOpen = false;
+    let messageCount = 0;
+
+    // Toggle chat window
+    document.getElementById('chatToggle').addEventListener('click', function() {
+        const chatWindow = document.getElementById('chatWindow');
+        const chatBadge = document.querySelector('.chat-badge');
+
+        chatOpen = !chatOpen;
+
+        if (chatOpen) {
+            chatWindow.classList.add('active');
+            chatBadge.style.display = 'none';
+
+            // Send initial greeting if no messages
+            if (messageCount === 0) {
+                setTimeout(() => {
+                    addAgentMessage("Hello! 👋 How can I help you with your Local Marketplace experience today?");
+                }, 500);
+            }
+        } else {
+            chatWindow.classList.remove('active');
+        }
+    });
+
+    // Close chat
+    document.getElementById('chatClose').addEventListener('click', function() {
+        document.getElementById('chatWindow').classList.remove('active');
+        chatOpen = false;
+    });
+
+    // Handle Enter key in chat input
+    function handleChatKeyPress(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    }
+
+    // Send message
+    function sendMessage() {
+        const input = document.getElementById('chatInput');
+        const message = input.value.trim();
+
+        if (message === '') return;
+
+        // Add user message
+        addUserMessage(message);
+        input.value = '';
+
+        // Show typing indicator
+        showTypingIndicator();
+
+        // Generate response after delay
+        setTimeout(() => {
+            hideTypingIndicator();
+            const response = generateResponse(message);
+            addAgentMessage(response);
+        }, 1000 + Math.random() * 1000);
+    }
+
+    // Add user message
+    function addUserMessage(text) {
+        const messagesContainer = document.getElementById('chatMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message user';
+        messageDiv.innerHTML = `
+            <div class="message-avatar">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <div class="message-content">${escapeHtml(text)}</div>
+        `;
+        messagesContainer.appendChild(messageDiv);
+        scrollToBottom();
+        messageCount++;
+    }
+
+    // Add agent message
+    function addAgentMessage(text) {
+        const messagesContainer = document.getElementById('chatMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message agent';
+        messageDiv.innerHTML = `
+            <div class="message-avatar">
+                <i class="fa-solid fa-headset"></i>
+            </div>
+            <div class="message-content">${text}</div>
+        `;
+        messagesContainer.appendChild(messageDiv);
+        scrollToBottom();
+        messageCount++;
+    }
+
+    // Show typing indicator
+    function showTypingIndicator() {
+        const messagesContainer = document.getElementById('chatMessages');
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'message agent';
+        typingDiv.id = 'typingIndicator';
+        typingDiv.innerHTML = `
+            <div class="message-avatar">
+                <i class="fa-solid fa-headset"></i>
+            </div>
+            <div class="typing-indicator">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        `;
+        messagesContainer.appendChild(typingDiv);
+        scrollToBottom();
+    }
+
+    // Hide typing indicator
+    function hideTypingIndicator() {
+        const typingIndicator = document.getElementById('typingIndicator');
+        if (typingIndicator) {
+            typingIndicator.remove();
+        }
+    }
+
+    // Generate smart response based on keywords
+    function generateResponse(message) {
+        const lowerMessage = message.toLowerCase();
+
+        // Shabs Cuisine / Food related
+        if (lowerMessage.includes('shabs') || lowerMessage.includes('food') || lowerMessage.includes('cuisine')) {
+            return "Shabs Cuisine is one of our top partners! 🍽️ They specialize in fresh frozen items like samosas, rolls, and sandwiches. Would you like to see their menu or learn how to order?";
+        }
+
+        // How to sell
+        if (lowerMessage.includes('sell') || lowerMessage.includes('seller') || lowerMessage.includes('store')) {
+            return "Great question! Starting your store on Local Marketplace is easy. You can <a href='/create-store'>become a seller here</a>. We'll guide you through setting up your store, adding products, and reaching customers. It takes less than 10 minutes! 🚀";
+        }
+
+        // Delivery times
+        if (lowerMessage.includes('delivery') || lowerMessage.includes('shipping') || lowerMessage.includes('time')) {
+            return "Delivery times vary by location and seller. Most orders are delivered within 24-48 hours. You can check specific delivery estimates on each product page. Need help with a specific order? 📦";
+        }
+
+        // Pricing / Fees
+        if (lowerMessage.includes('price') || lowerMessage.includes('fee') || lowerMessage.includes('cost') || lowerMessage.includes('commission')) {
+            return "Local Marketplace charges a small commission only when you make a sale. There are no upfront fees or monthly subscriptions. You keep the majority of your earnings! Want to learn more about our <a href='/about'>pricing structure</a>? 💰";
+        }
+
+        // Help / Support
+        if (lowerMessage.includes('help') || lowerMessage.includes('support') || lowerMessage.includes('contact')) {
+            return "I'm here to help! You can also reach our support team at <a href='mailto:support@localmarketplace.com'>support@localmarketplace.com</a> or visit our <a href='/contact'>contact page</a>. What specific question can I answer for you? 💬";
+        }
+
+        // Products
+        if (lowerMessage.includes('product') || lowerMessage.includes('item') || lowerMessage.includes('buy')) {
+            return "We have thousands of products from local sellers! You can browse by category or search for specific items. Check out our <a href='/products'>products page</a> to explore what's available in your area. 🛍️";
+        }
+
+        // About
+        if (lowerMessage.includes('about') || lowerMessage.includes('who') || lowerMessage.includes('what is')) {
+            return "Local Marketplace connects vibrant neighborhoods through seamless digital commerce. We empower local entrepreneurs worldwide by providing them with tools to reach customers and grow their businesses. Learn more on our <a href='/about'>about page</a>! 🌟";
+        }
+
+        // Greetings
+        if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
+            return "Hello! 👋 Great to hear from you! How can I assist you with Local Marketplace today?";
+        }
+
+        // Thanks
+        if (lowerMessage.includes('thank') || lowerMessage.includes('thanks')) {
+            return "You're very welcome! 😊 Is there anything else I can help you with today?";
+        }
+
+        // Default response
+        return "I'd be happy to help you with that! Could you provide more details? I can assist with questions about selling, products, delivery, or general platform information. You can also <a href='/contact'>contact our support team</a> for personalized assistance. 💡";
+    }
+
+    // Scroll to bottom of messages
+    function scrollToBottom() {
+        const messagesContainer = document.getElementById('chatMessages');
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Escape HTML to prevent XSS
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+</script>
+
+{% endblock %}

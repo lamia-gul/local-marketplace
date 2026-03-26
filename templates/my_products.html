@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Products | Local Marketplace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+        body { font-family: 'Outfit', sans-serif; }
+        .loci-green { color: #8cc63f; }
+        .bg-loci-green { background-color: #8cc63f; }
+        .loci-purple { color: #6d5cae; }
+        .bg-loci-purple { background-color: #6d5cae; }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <header class="py-4 px-6 flex justify-between items-center bg-white border-b border-gray-100 shadow-sm">
+        <h1 class="text-3xl font-extrabold tracking-tighter loci-green">Local Marketplace</h1>
+        <div class="flex items-center space-x-6">
+            <span class="text-sm text-gray-600">Welcome, <span class="font-bold loci-purple">Lamia Gul</span></span>
+            <div class="relative">
+                <i class="fa-solid fa-bell loci-purple text-xl cursor-pointer"></i>
+                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold px-1 rounded-full">3</span>
+            </div>
+            <button class="loci-purple"><i class="fa-solid fa-bars text-2xl"></i></button>
+        </div>
+    </header>
+
+    <div class="flex min-h-screen">
+
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white border-r border-gray-100 shadow-sm">
+            <div class="p-6">
+                <h2 class="text-lg font-bold text-gray-800 mb-6">Seller Dashboard</h2>
+                <nav class="space-y-2">
+                    <a href="/dashboard" class="flex items-center px-4 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-lg transition">
+                        <i class="fa-solid fa-chart-line mr-3 loci-purple"></i>
+                        Overview
+                    </a>
+                    <a href="/store-profile" class="flex items-center px-4 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-lg transition">
+                        <i class="fa-solid fa-store mr-3 loci-purple"></i>
+                        Store Profile
+                    </a>
+                    <a href="/seller/products" class="flex items-center px-4 py-3 text-sm font-semibold bg-loci-green text-white rounded-lg">
+                        <i class="fa-solid fa-box mr-3"></i>
+                        My Products
+                    </a>
+                    <a href="/seller/finances" class="flex items-center px-4 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-lg transition">
+                        <i class="fa-solid fa-dollar-sign mr-3 loci-purple"></i>
+                        Finances
+                    </a>
+                    <a href="/seller/orders" class="flex items-center px-4 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-lg transition">
+                        <i class="fa-solid fa-shopping-bag mr-3 loci-purple"></i>
+                        Orders
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-lg transition">
+                        <i class="fa-solid fa-gear mr-3 loci-purple"></i>
+                        Settings
+                    </a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <div class="max-w-7xl mx-auto">
+
+                <!-- Page Header -->
+                <div class="mb-8 flex justify-between items-center">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2">My Products</h1>
+                        <p class="text-gray-500 text-sm">Manage your product inventory</p>
+                    </div>
+                    <button class="bg-loci-green text-white px-6 py-3 rounded-xl font-bold shadow-sm hover:opacity-90 transition flex items-center">
+                        <i class="fa-solid fa-plus mr-2"></i>
+                        Add New Product
+                    </button>
+                </div>
+
+                <!-- Products Table -->
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Product</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Category</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Price</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Stock</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center">
+                                            <img src="https://via.placeholder.com/60" class="w-12 h-12 rounded-lg object-cover mr-3">
+                                            <div>
+                                                <p class="text-sm font-semibold text-gray-800">Fresh Groceries Pack</p>
+                                                <p class="text-xs text-gray-500">SKU: FGP-001</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">Groceries</td>
+                                    <td class="px-6 py-4 text-sm font-semibold text-gray-800">$120.00</td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">45</td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-xs font-semibold text-green-700 bg-green-100 px-3 py-1 rounded-full">Active</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex space-x-2">
+                                            <button class="text-blue-600 hover:text-blue-800"><i class="fa-solid fa-pen-to-square"></i></button>
+                                            <button class="text-red-600 hover:text-red-800"><i class="fa-solid fa-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center">
+                                            <img src="https://via.placeholder.com/60" class="w-12 h-12 rounded-lg object-cover mr-3">
+                                            <div>
+                                                <p class="text-sm font-semibold text-gray-800">Modern Living Chair</p>
+                                                <p class="text-xs text-gray-500">SKU: MLC-002</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">Furniture</td>
+                                    <td class="px-6 py-4 text-sm font-semibold text-gray-800">$450.00</td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">12</td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-xs font-semibold text-green-700 bg-green-100 px-3 py-1 rounded-full">Active</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex space-x-2">
+                                            <button class="text-blue-600 hover:text-blue-800"><i class="fa-solid fa-pen-to-square"></i></button>
+                                            <button class="text-red-600 hover:text-red-800"><i class="fa-solid fa-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center">
+                                            <img src="https://via.placeholder.com/60" class="w-12 h-12 rounded-lg object-cover mr-3">
+                                            <div>
+                                                <p class="text-sm font-semibold text-gray-800">Winter Parka Jacket</p>
+                                                <p class="text-xs text-gray-500">SKU: WPJ-003</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">Clothing</td>
+                                    <td class="px-6 py-4 text-sm font-semibold text-gray-800">$89.00</td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">8</td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-xs font-semibold text-gray-700 bg-gray-100 px-3 py-1 rounded-full">Draft</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex space-x-2">
+                                            <button class="text-blue-600 hover:text-blue-800"><i class="fa-solid fa-pen-to-square"></i></button>
+                                            <button class="text-red-600 hover:text-red-800"><i class="fa-solid fa-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center">
+                                            <img src="https://via.placeholder.com/60" class="w-12 h-12 rounded-lg object-cover mr-3">
+                                            <div>
+                                                <p class="text-sm font-semibold text-gray-800">Sport Running Shoes</p>
+                                                <p class="text-xs text-gray-500">SKU: SRS-004</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">Sports</td>
+                                    <td class="px-6 py-4 text-sm font-semibold text-gray-800">$65.00</td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">23</td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-xs font-semibold text-green-700 bg-green-100 px-3 py-1 rounded-full">Active</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex space-x-2">
+                                            <button class="text-blue-600 hover:text-blue-800"><i class="fa-solid fa-pen-to-square"></i></button>
+                                            <button class="text-red-600 hover:text-red-800"><i class="fa-solid fa-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="px-6 py-4 border-t border-gray-100 flex justify-between items-center">
+                        <p class="text-sm text-gray-500">Showing 4 of 127 products</p>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 border border-gray-200 rounded text-sm hover:bg-gray-50">Previous</button>
+                            <button class="px-3 py-1 bg-loci-green text-white rounded text-sm">1</button>
+                            <button class="px-3 py-1 border border-gray-200 rounded text-sm hover:bg-gray-50">2</button>
+                            <button class="px-3 py-1 border border-gray-200 rounded text-sm hover:bg-gray-50">3</button>
+                            <button class="px-3 py-1 border border-gray-200 rounded text-sm hover:bg-gray-50">Next</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+    </div>
+
+</body>
+</html>

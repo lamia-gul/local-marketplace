@@ -1,0 +1,250 @@
+<!-- Location Modal Overlay -->
+<div id="locationModal" class="location-modal-overlay" style="display: none;">
+    <div class="location-modal-content">
+        <div class="modal-header">
+            <div class="location-icon">📍</div>
+            <h2 style="font-size: 1.75rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
+                Choose Your Location
+            </h2>
+            <p style="font-size: 0.938rem; color: #6B7280; font-weight: 300;">
+                We'll show you products and stores available in your area
+            </p>
+        </div>
+
+        <form id="locationForm" method="POST" action="/set-location">
+            <div class="form-group">
+                <label for="country">Country</label>
+                <select id="country" name="country" class="location-select">
+                    <option value="Pakistan" selected>🇵🇰 Pakistan</option>
+                    <option value="India">🇮🇳 India</option>
+                    <option value="Bangladesh">🇧🇩 Bangladesh</option>
+                    <option value="UAE">🇦🇪 UAE</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="city">City</label>
+                <select id="city" name="city" class="location-select">
+                    <option value="Karachi" selected>Karachi</option>
+                    <option value="Lahore">Lahore</option>
+                    <option value="Islamabad">Islamabad</option>
+                    <option value="Rawalpindi">Rawalpindi</option>
+                    <option value="Faisalabad">Faisalabad</option>
+                    <option value="Multan">Multan</option>
+                    <option value="Peshawar">Peshawar</option>
+                    <option value="Quetta">Quetta</option>
+                    <option value="Sialkot">Sialkot</option>
+                    <option value="Gujranwala">Gujranwala</option>
+                </select>
+            </div>
+
+            <button type="button" id="detectLocationBtn" class="detect-btn">
+                <i class="fas fa-location-crosshairs"></i>
+                Detect My Location
+            </button>
+
+            <button type="submit" class="submit-btn">
+                Continue Shopping
+            </button>
+        </form>
+
+        <p class="modal-footer-text">
+            You can change your location anytime from settings
+        </p>
+    </div>
+</div>
+
+<style>
+    .location-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .location-modal-content {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(30px);
+        -webkit-backdrop-filter: blur(30px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 24px;
+        padding: 3rem;
+        max-width: 480px;
+        width: 90%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        animation: slideUp 0.4s ease;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .modal-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .location-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 0.5rem;
+    }
+
+    .location-select {
+        width: 100%;
+        padding: 1rem 1.25rem;
+        border: 1px solid #E5E7EB;
+        border-radius: 12px;
+        font-size: 0.938rem;
+        color: #111827;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        outline: none;
+    }
+
+    .location-select:focus {
+        border-color: #8CC63F;
+        box-shadow: 0 0 0 3px rgba(140, 198, 63, 0.1);
+    }
+
+    .detect-btn {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 0.938rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .detect-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 1.125rem;
+        background: #8CC63F;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .submit-btn:hover {
+        background: #7AB52F;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(140, 198, 63, 0.4);
+    }
+
+    .modal-footer-text {
+        text-align: center;
+        font-size: 0.813rem;
+        color: #9CA3AF;
+        margin-top: 1.5rem;
+        font-weight: 300;
+    }
+</style>
+
+<script>
+    // Show modal if no location is set
+    function checkAndShowLocationModal() {
+        const hasLocation = {{ 'true' if session.get('user_location') else 'false' }};
+        if (!hasLocation) {
+            document.getElementById('locationModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    // Detect location using browser geolocation
+    document.getElementById('detectLocationBtn').addEventListener('click', function() {
+        if (navigator.geolocation) {
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Detecting...';
+            this.disabled = true;
+
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    // Use reverse geocoding API to get city name
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const city = data.address.city || data.address.town || data.address.village || 'Karachi';
+                            const country = data.address.country || 'Pakistan';
+
+                            // Set the values in the form
+                            document.getElementById('city').value = city;
+                            document.getElementById('country').value = country;
+
+                            // Reset button
+                            document.getElementById('detectLocationBtn').innerHTML = '<i class="fas fa-check"></i> Location Detected';
+                            document.getElementById('detectLocationBtn').disabled = false;
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Could not detect location. Please select manually.');
+                            document.getElementById('detectLocationBtn').innerHTML = '<i class="fas fa-location-crosshairs"></i> Detect My Location';
+                            document.getElementById('detectLocationBtn').disabled = false;
+                        });
+                },
+                function(error) {
+                    alert('Location access denied. Please select your city manually.');
+                    document.getElementById('detectLocationBtn').innerHTML = '<i class="fas fa-location-crosshairs"></i> Detect My Location';
+                    document.getElementById('detectLocationBtn').disabled = false;
+                }
+            );
+        } else {
+            alert('Geolocation is not supported by your browser.');
+        }
+    });
+
+    // Check on page load
+    window.addEventListener('DOMContentLoaded', checkAndShowLocationModal);
+</script>

@@ -1,0 +1,209 @@
+{% extends "seller_base.html" %}
+
+{% set active_page = 'dashboard' %}
+
+{% block title %}Seller Dashboard | Local Marketplace{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Floating Glass Cards */
+    .glass-widget-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+
+    .glass-widget-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    /* Monochrome Icon Backgrounds */
+    .widget-icon {
+        width: 56px;
+        height: 56px;
+        background: #F3F4F6;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .widget-icon i {
+        color: #6B7280;
+        font-size: 1.5rem;
+    }
+
+    /* Primary CTA with Local Green */
+    .primary-cta {
+        background: #8CC63F;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    .primary-cta:hover {
+        background: #7AB52F;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(140, 198, 63, 0.3);
+    }
+
+    /* Monochrome Badge */
+    .status-badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.375rem 0.875rem;
+        border-radius: 50px;
+        background: #F3F4F6;
+        color: #6B7280;
+    }
+
+    .status-badge.success {
+        background: #F3F4F6;
+        color: #374151;
+    }
+
+    /* Glass Table Container */
+    .glass-table-container {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+</style>
+{% endblock %}
+
+{% block seller_content %}
+
+<!-- Page Header -->
+<div style="margin-bottom: 3rem;">
+    <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; color: #111827;">Dashboard Overview</h1>
+    <p style="font-size: 0.938rem; color: #6B7280;">Track your store performance and manage your business</p>
+</div>
+
+<!-- Summary Cards - Floating Glass -->
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-bottom: 3rem;">
+
+    <!-- Total Sales -->
+    <div class="glass-widget-card">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+            <div class="widget-icon">
+                <i class="fa-solid fa-dollar-sign"></i>
+            </div>
+            <span class="status-badge">+12.5%</span>
+        </div>
+        <h3 style="font-size: 0.875rem; font-weight: 500; color: #6B7280; margin-bottom: 0.5rem;">Total Sales</h3>
+        <p style="font-size: 2rem; font-weight: 700; color: #111827;">$24,580</p>
+        <p style="font-size: 0.75rem; color: #9CA3AF; margin-top: 0.5rem;">Last 30 days</p>
+    </div>
+
+    <!-- Active Products -->
+    <div class="glass-widget-card">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+            <div class="widget-icon">
+                <i class="fa-solid fa-box"></i>
+            </div>
+            <span class="status-badge">+3 new</span>
+        </div>
+        <h3 style="font-size: 0.875rem; font-weight: 500; color: #6B7280; margin-bottom: 0.5rem;">Active Products</h3>
+        <p style="font-size: 2rem; font-weight: 700; color: #111827;">127</p>
+        <p style="font-size: 0.75rem; color: #9CA3AF; margin-top: 0.5rem;">In your catalog</p>
+    </div>
+
+    <!-- Recent Orders -->
+    <div class="glass-widget-card">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+            <div class="widget-icon">
+                <i class="fa-solid fa-shopping-bag"></i>
+            </div>
+            <span class="status-badge">8 pending</span>
+        </div>
+        <h3 style="font-size: 0.875rem; font-weight: 500; color: #6B7280; margin-bottom: 0.5rem;">Recent Orders</h3>
+        <p style="font-size: 2rem; font-weight: 700; color: #111827;">342</p>
+        <p style="font-size: 0.75rem; color: #9CA3AF; margin-top: 0.5rem;">This month</p>
+    </div>
+
+</div>
+
+<!-- Recent Orders Table -->
+<div class="glass-table-container">
+    <div style="padding: 1.5rem 2rem; border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
+        <h2 style="font-size: 1.125rem; font-weight: 700; color: #111827;">Recent Orders</h2>
+    </div>
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead style="background: #F9FAFB;">
+                <tr>
+                    <th style="padding: 0.875rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: 0.05em;">Order ID</th>
+                    <th style="padding: 0.875rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: 0.05em;">Customer</th>
+                    <th style="padding: 0.875rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: 0.05em;">Product</th>
+                    <th style="padding: 0.875rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: 0.05em;">Amount</th>
+                    <th style="padding: 0.875rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: 0.05em;">Status</th>
+                    <th style="padding: 0.875rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: 0.05em;">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.05); transition: background 0.2s ease;" onmouseover="this.style.background='#F9FAFB'" onmouseout="this.style.background='transparent'">
+                    <td style="padding: 1rem 1.5rem; font-size: 0.875rem; font-weight: 600; color: #111827;">#ORD-1024</td>
+                    <td style="padding: 1rem 1.5rem; font-size: 0.875rem; color: #6B7280;">Ahmed Khan</td>
+                    <td style="padding: 1rem 1.5rem; font-size: 0.875rem; color: #6B7280;">Fresh Groceries Pack</td>
+                    <td style="padding: 1rem 1.5rem; font-size: 0.875rem; font-weight: 700; color: #111827;">$120.00</td>
+                    <td style="padding: 1rem 1.5rem;">
+                        <span class="status-badge success">Delivered</span>
+                    </td>
+                    <td style="padding: 1rem 1.5rem; font-size: 0.875rem; color: #6B7280;">Mar 15, 2026</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.05); transition: background 0.2s ease;" onmouseover="this.style.background='#F9FAFB'" onmouseout="this.style.background='transparent'">
+                    <td style="padding: 1rem 1.5rem; font-size: 0.875rem; font-weight: 600; color: #111827;">#ORD-1023</td>
+                    <td style="padding: 1rem 1.5rem; font-size: 0.875rem; color: #6B7280;">Sara Ali</td>
+                    <td style="padding: 1rem 1.5rem; font-size: 0.875rem; color: #6B7280;">Modern Living Chair</td>
+                    <td style="padding: 1rem 1.5rem; font-size: 0.875rem; font-weight: 700; color: #111827;">$450.00</td>
+                    <td style="padding: 1rem 1.5rem;">
+                        <span class="status-badge">Processing</span>
+                    </td>
+                    <td style="padding: 1rem 1.5rem; font-size: 0.875rem; color: #6B7280;">Mar 14, 2026</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.05); transition: background 0.2s ease;" onmouseover="this.style.background='#F9FAFB'" onmouseout="this.style.background='transparent'">
+                    <td style="padding: 1rem 1.5rem; font-size: 0.875rem; font-weight: 600; color: #111827;">#ORD-1022</td>
+                    <td style="padding: 1rem 1.5rem; font-size: 0.875rem; color: #6B7280;">Bilal Hassan</td>
+                    <td style="padding: 1rem 1.5rem; font-size: 0.875rem; color: #6B7280;">Winter Parka Jacket</td>
+                    <td style="padding: 1rem 1.5rem; font-size: 0.875rem; font-weight: 700; color: #111827;">$89.00</td>
+                    <td style="padding: 1rem 1.5rem;">
+                        <span class="status-badge">Shipped</span>
+                    </td>
+                    <td style="padding: 1rem 1.5rem; font-size: 0.875rem; color: #6B7280;">Mar 13, 2026</td>
+                </tr>
+                <tr style="transition: background 0.2s ease;" onmouseover="this.style.background='#F9FAFB'" onmouseout="this.style.background='transparent'">
+                    <td style="padding: 1rem 1.5rem; font-size: 0.875rem; font-weight: 600; color: #111827;">#ORD-1021</td>
+                    <td style="padding: 1rem 1.5rem; font-size: 0.875rem; color: #6B7280;">Fatima Noor</td>
+                    <td style="padding: 1rem 1.5rem; font-size: 0.875rem; color: #6B7280;">Sport Running Shoes</td>
+                    <td style="padding: 1rem 1.5rem; font-size: 0.875rem; font-weight: 700; color: #111827;">$65.00</td>
+                    <td style="padding: 1rem 1.5rem;">
+                        <span class="status-badge success">Delivered</span>
+                    </td>
+                    <td style="padding: 1rem 1.5rem; font-size: 0.875rem; color: #6B7280;">Mar 12, 2026</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div style="padding: 1.25rem 2rem; border-top: 1px solid rgba(0, 0, 0, 0.05); display: flex; justify-content: space-between; align-items: center;">
+        <p style="font-size: 0.875rem; color: #6B7280;">Showing 4 of 342 orders</p>
+        <a href="/seller/orders" class="primary-cta">
+            View All Orders <i class="fa-solid fa-arrow-right"></i>
+        </a>
+    </div>
+</div>
+
+{% endblock %}

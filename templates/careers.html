@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}Careers - Local Marketplace{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Glassmorphism Card Effect */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .glass-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Responsive font sizes */
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2rem !important;
+        }
+        .section-title {
+            font-size: 1.75rem !important;
+        }
+        .card-icon {
+            font-size: 3rem !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section style="background: linear-gradient(135deg, #EC4899 0%, #8B5CF6 100%); padding: 80px 0;">
+    <div class="container mx-auto px-4 md:px-8 text-center">
+        <h1 class="hero-title" style="font-size: 3rem; font-weight: 700; color: white; margin-bottom: 1rem;">
+            Join Our Team
+        </h1>
+        <p style="font-size: 1.125rem; md:font-size: 1.25rem; color: rgba(255, 255, 255, 0.9); max-width: 700px; margin: 0 auto; padding: 0 1rem;">
+            Help us build the future of local commerce in Pakistan
+        </p>
+    </div>
+</section>
+
+<!-- Why Join Us Section -->
+<section style="background: linear-gradient(135deg, #F9FAFB 0%, #FFFFFF 100%); padding: 80px 0;">
+    <div class="container mx-auto px-4 md:px-8">
+        <div style="max-width: 900px; margin: 0 auto; text-align: center; margin-bottom: 3rem;">
+            <h2 class="section-title" style="font-size: 2.5rem; font-weight: 600; color: #111827; margin-bottom: 1.5rem;">
+                Why Work at Local Marketplace?
+            </h2>
+            <p style="font-size: 1rem; md:font-size: 1.125rem; color: #6B7280; line-height: 1.8; padding: 0 1rem;">
+                We're on a mission to empower local businesses and connect communities. Join a team that's making a real impact in people's lives every day.
+            </p>
+        </div>
+
+        <!-- 2x2 Grid Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8" style="max-width: 1000px; margin: 0 auto;">
+            <!-- Benefit 1 -->
+            <div class="glass-card">
+                <div class="card-icon" style="font-size: 4rem; margin-bottom: 1.5rem;">🚀</div>
+                <h3 style="font-size: 1.25rem; md:font-size: 1.5rem; font-weight: 600; color: #111827; margin-bottom: 1rem;">Growth Opportunities</h3>
+                <p style="color: #6B7280; line-height: 1.6; font-size: 0.938rem; md:font-size: 1rem;">
+                    Continuous learning and career development in a fast-growing startup environment
+                </p>
+            </div>
+
+            <!-- Benefit 2 -->
+            <div class="glass-card">
+                <div class="card-icon" style="font-size: 4rem; margin-bottom: 1.5rem;">💼</div>
+                <h3 style="font-size: 1.25rem; md:font-size: 1.5rem; font-weight: 600; color: #111827; margin-bottom: 1rem;">Competitive Benefits</h3>
+                <p style="color: #6B7280; line-height: 1.6; font-size: 0.938rem; md:font-size: 1rem;">
+                    Attractive salary packages, health insurance, and performance bonuses
+                </p>
+            </div>
+
+            <!-- Benefit 3 -->
+            <div class="glass-card">
+                <div class="card-icon" style="font-size: 4rem; margin-bottom: 1.5rem;">🏠</div>
+                <h3 style="font-size: 1.25rem; md:font-size: 1.5rem; font-weight: 600; color: #111827; margin-bottom: 1rem;">Flexible Work</h3>
+                <p style="color: #6B7280; line-height: 1.6; font-size: 0.938rem; md:font-size: 1rem;">
+                    Hybrid work model with flexible hours to maintain work-life balance
+                </p>
+            </div>
+
+            <!-- Benefit 4 -->
+            <div class="glass-card">
+                <div class="card-icon" style="font-size: 4rem; margin-bottom: 1.5rem;">🎯</div>
+                <h3 style="font-size: 1.25rem; md:font-size: 1.5rem; font-weight: 600; color: #111827; margin-bottom: 1rem;">Impactful Work</h3>
+                <p style="color: #6B7280; line-height: 1.6; font-size: 0.938rem; md:font-size: 1rem;">
+                    Make a real difference in local communities and small businesses
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Open Positions Section -->
+<section style="background: #F9FAFB; padding: 80px 0;">
+    <div class="container mx-auto px-4 md:px-8">
+        <div style="max-width: 900px; margin: 0 auto;">
+            <h2 class="section-title" style="font-size: 2.5rem; font-weight: 600; color: #111827; margin-bottom: 3rem; text-align: center;">
+                Open Positions
+            </h2>
+
+            <!-- Position 1 -->
+            <div style="background: white; border-radius: 16px; padding: 1.5rem; md:padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); transition: all 0.3s ease;"
+                 onmouseover="this.style.boxShadow='0 8px 25px rgba(0, 0, 0, 0.12)'"
+                 onmouseout="this.style.boxShadow='0 2px 10px rgba(0, 0, 0, 0.05)'">
+                <div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 1rem;">
+                    <div style="flex: 1; min-width: 250px;">
+                        <h3 style="font-size: 1.25rem; md:font-size: 1.5rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
+                            Full Stack Developer
+                        </h3>
+                        <p style="color: #6B7280; margin-bottom: 1rem; font-size: 0.875rem; md:font-size: 1rem;">Engineering • Karachi • Full-time</p>
+                        <p style="color: #6B7280; line-height: 1.6; font-size: 0.938rem;">
+                            Build and scale our marketplace platform using modern web technologies.
+                        </p>
+                    </div>
+                    <a href="{{ url_for('contact') }}" style="background: #8CC63F; color: white; padding: 0.75rem 1.5rem; md:padding: 0.75rem 2rem; border-radius: 50px; text-decoration: none; font-weight: 600; white-space: nowrap; transition: all 0.3s ease; font-size: 0.875rem; md:font-size: 1rem;"
+                       onmouseover="this.style.background='#7AB52F'; this.style.transform='translateY(-2px)'"
+                       onmouseout="this.style.background='#8CC63F'; this.style.transform='translateY(0)'">
+                        Apply Now
+                    </a>
+                </div>
+            </div>
+
+            <!-- Position 2 -->
+            <div style="background: white; border-radius: 16px; padding: 1.5rem; md:padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); transition: all 0.3s ease;"
+                 onmouseover="this.style.boxShadow='0 8px 25px rgba(0, 0, 0, 0.12)'"
+                 onmouseout="this.style.boxShadow='0 2px 10px rgba(0, 0, 0, 0.05)'">
+                <div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 1rem;">
+                    <div style="flex: 1; min-width: 250px;">
+                        <h3 style="font-size: 1.25rem; md:font-size: 1.5rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
+                            Product Manager
+                        </h3>
+                        <p style="color: #6B7280; margin-bottom: 1rem; font-size: 0.875rem; md:font-size: 1rem;">Product • Karachi • Full-time</p>
+                        <p style="color: #6B7280; line-height: 1.6; font-size: 0.938rem;">
+                            Lead product strategy and drive innovation for our marketplace features.
+                        </p>
+                    </div>
+                    <a href="{{ url_for('contact') }}" style="background: #8CC63F; color: white; padding: 0.75rem 1.5rem; md:padding: 0.75rem 2rem; border-radius: 50px; text-decoration: none; font-weight: 600; white-space: nowrap; transition: all 0.3s ease; font-size: 0.875rem; md:font-size: 1rem;"
+                       onmouseover="this.style.background='#7AB52F'; this.style.transform='translateY(-2px)'"
+                       onmouseout="this.style.background='#8CC63F'; this.style.transform='translateY(0)'">
+                        Apply Now
+                    </a>
+                </div>
+            </div>
+
+            <!-- Position 3 -->
+            <div style="background: white; border-radius: 16px; padding: 1.5rem; md:padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); transition: all 0.3s ease;"
+                 onmouseover="this.style.boxShadow='0 8px 25px rgba(0, 0, 0, 0.12)'"
+                 onmouseout="this.style.boxShadow='0 2px 10px rgba(0, 0, 0, 0.05)'">
+                <div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 1rem;">
+                    <div style="flex: 1; min-width: 250px;">
+                        <h3 style="font-size: 1.25rem; md:font-size: 1.5rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
+                            Marketing Specialist
+                        </h3>
+                        <p style="color: #6B7280; margin-bottom: 1rem; font-size: 0.875rem; md:font-size: 1rem;">Marketing • Karachi • Full-time</p>
+                        <p style="color: #6B7280; line-height: 1.6; font-size: 0.938rem;">
+                            Drive growth through creative marketing campaigns and community engagement.
+                        </p>
+                    </div>
+                    <a href="{{ url_for('contact') }}" style="background: #8CC63F; color: white; padding: 0.75rem 1.5rem; md:padding: 0.75rem 2rem; border-radius: 50px; text-decoration: none; font-weight: 600; white-space: nowrap; transition: all 0.3s ease; font-size: 0.875rem; md:font-size: 1rem;"
+                       onmouseover="this.style.background='#7AB52F'; this.style.transform='translateY(-2px)'"
+                       onmouseout="this.style.background='#8CC63F'; this.style.transform='translateY(0)'">
+                        Apply Now
+                    </a>
+                </div>
+            </div>
+
+            <!-- Don't see your role -->
+            <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: white; border-radius: 16px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);">
+                <h3 style="font-size: 1.25rem; md:font-size: 1.5rem; font-weight: 600; color: #111827; margin-bottom: 1rem;">
+                    Don't see your role?
+                </h3>
+                <p style="color: #6B7280; margin-bottom: 1.5rem; font-size: 0.938rem; md:font-size: 1rem; padding: 0 1rem;">
+                    We're always looking for talented people. Send us your resume!
+                </p>
+                <a href="{{ url_for('contact') }}" style="display: inline-block; background: #6366F1; color: white; padding: 1rem 2rem; md:padding: 1rem 2.5rem; border-radius: 50px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; font-size: 0.938rem; md:font-size: 1rem;"
+                   onmouseover="this.style.background='#4F46E5'; this.style.transform='translateY(-2px)'"
+                   onmouseout="this.style.background='#6366F1'; this.style.transform='translateY(0)'">
+                    Get in Touch
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Join Our Team CTA Section -->
+<section style="background: linear-gradient(135deg, #8CC63F 0%, #7AB52F 100%); padding: 80px 0;">
+    <div class="container mx-auto px-4 md:px-8 text-center">
+        <div style="max-width: 700px; margin: 0 auto;">
+            <h2 style="font-size: 2rem; md:font-size: 2.5rem; font-weight: 700; color: white; margin-bottom: 1.5rem; line-height: 1.2;">
+                Ready to Make an Impact?
+            </h2>
+            <p style="font-size: 1rem; md:font-size: 1.125rem; color: rgba(255, 255, 255, 0.95); margin-bottom: 2.5rem; line-height: 1.6; padding: 0 1rem;">
+                Join Local Marketplace and help us empower local businesses worldwide. Your next career move starts here.
+            </p>
+            <a href="{{ url_for('contact') }}"
+               style="display: inline-block; background: white; color: #8CC63F; padding: 1rem 2rem; md:padding: 1.25rem 3rem; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 1rem; md:font-size: 1.125rem; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);"
+               onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(0, 0, 0, 0.15)'"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0, 0, 0, 0.1)'">
+                <i class="fa-solid fa-paper-plane" style="margin-right: 0.5rem;"></i>
+                Join Our Team
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
